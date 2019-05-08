@@ -1,0 +1,65 @@
+\documentclass[a4paper]{paper}
+
+% Set margins
+\usepackage[hmargin=2cm, vmargin=2cm]{geometry}
+
+\frenchspacing
+
+% Language packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+% \usepackage[magyar]{babel}
+
+% AMS
+\usepackage{amssymb,amsmath}
+
+% Graphic packages
+\usepackage{graphicx}
+
+% Colors
+\usepackage{color}
+\usepackage[usenames,dvipsnames]{xcolor}
+
+% Enumeration
+\usepackage{enumitem}
+
+\begin{document}
+
+\begin{center}
+   \large \textbf{Éttermi kiszállítás szimulációja és optimalizációja}
+\end{center}
+
+\vskip 1cm
+
+\section{Feladat}
+
+Az éttermi rendelések kiszállításánál megjelenő optimalizálási problémák szimulációja és vizsgálata, figyelembe véve többek között az ételek elkészítésének idejét, a rendelkezésre álló alapanyagokat, az éttermek és a kiszállítás helyeinek távolságait. Fel kell írni egy általános modellt, tetszőlegesen sok étterem, megrendelő és alapanyag beszerzőhely esetén. Az optimalizálás célja, hogy minél több megrendelést, minél rövidebb idő alatt, minél kisebb költséggel lehessen teljesíteni. A szimuláció és az optimalizálás Python programozási nyelv segítségével készül.
+
+\section{Egy étterem, több megrendelés}
+
+Ebben az esetben a feladat tulajdonképpen az, hogy a megrendelések helyeire egy minimális hosszúságú körutat tervezzünk.
+
+Általános gráf esetében a megrendelőket összekötő útvonalakat külön algoritmussal kell megkeresni. Ilyen lehet például a Dijstra, A* vagy a Floyd-Warshall algoritmus.
+
+A szimuláció lépései:
+\begin{itemize}
+\item Véletlen pontok generálása a síkon. ($(x, y)$ koordináták.)
+\item Távolságok kiszámítása az egyes pontok között (légvonalban). Egy egy $W$ távolságmátrixot eredményez.
+\item Kitüntetett (étterem, megrendelő csomópontok kijelölése).
+\item Legrövidebb utak meghatározása ($W$ alapján) a kijelölt pontok között.
+\item Minimális költségű körút keresése a legrövidebb utak alapján.
+\end{itemize}
+
+\section{Több étterem, több megrendelés}
+
+\section{Egy étterem, különböző rendelési idők}
+
+\section{Egy étterem, különböző idejű megrendelések}
+
+\section{Több étterem, különböző idejű megrendelések}
+
+\section{Több étterem, véges nyersanyag}
+
+\section{Több étterem nyersanyag beszállításával}
+
+\end{document}
