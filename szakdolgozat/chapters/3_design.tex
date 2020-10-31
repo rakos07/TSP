@@ -37,42 +37,60 @@ Az \texttt{includegraphics} parancsba
 Az ábrák felirata az ábra alatt kell legyen.
 Az ábrák hivatkozásához használt nevet konvenció szerint \texttt{fig:}-el célszerű kezdeni.
 
-\begin{figure}[h]
-\centering
-\includegraphics[scale=0.3]{images/me_logo.png}
-\caption{A Miskolci Egyetem címere.}
-\label{fig:cimer}
-\end{figure}
-
 \Section{További környezetek}
 
-A matematikai témájú dolgozatokban szükség lehet tételek és bizonyításaik megadására.
-Ehhez szintén vannak készen elérhető környezetek.
+\subsection{
+Pitagorasz tétel
+}
 
-\begin{definition}
-Ez egy definíció
-\end{definition}
+A derékszögű háromszög befogóira emelt négyzetek területeinek összege egyenlő az átgofóra emelt négyzet területével.
 
-\begin{lemma}
-Ez egy lemma
-\end{lemma}
+\subsection{
+Euklideszi távolság
+}
 
-\begin{theorem}
-Ez egy tétel
-\end{theorem}
+Pitagorasz tételén alapul. Két pont távolsága a pontok különbségének, a pontok különbségének négyzetének gyökével egyenlő.
 
-\begin{proof}
-Ez egy bizonyítás
-\end{proof}
+\subsection{
+A* algorizmus
+}
 
-\begin{corollary}
-Ez egy tétel
-\end{corollary}
+f(n) = g(n) + h (n) \\
+g(n) - a kezdőpontból n-ig tartó út költsége \\
+h(n) - n-től a célig vezető legolcsóbb út költése 
 
-\begin{remark}
-Ez egy megjegyzés
-\end{remark}
+\subsection{
+Gibbs faktor
+}
 
-\begin{example}
-Ez egy példa
-\end{example}
+\subsection{
+A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási kritériumokra levetítve
+}
+
+Az egy ügynökös utazó ügynök probléma esetén jelölje V a csúcsok (pontok) halmazát, xi,j azt, hogy az i. pontból megy-e közvetlenül út a j. pontba. Az xi,j 1, ha útvonal köti össze a két pontot, különben 0:
+
+A dij jelöli az i. és a j. pont távolságát, n pedig a pontok számát. A célfüggvény az alábbi:
+
+A célfüggvénnyel magát a megtett távolságot szeretnénk optimalizálni. A pontba csak egy él fut be, tehát
+
+Valamint, minden pontba csakis egy él távozik, ezek szerint
+
+A sorrendiség a következő feltétel alapján érényesül
+
+Itt ui az i. pont, uj a j. pont látogatási indexe, ahol az i. pontot hamarabb keresi fel az futár mint a j.-ot
+
+\subsection{
+A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva
+}
+
+A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen V a csúcsok halmaza, xi,j az, hogy megy-e az i. pontból út a j. pontba közvetlenül, di,j az i. és j. pont távolsága. Legyen m az ügynökök száma és ezáltal a kapott célfüggvény:
+
+Minden pontba csakis egy út indul, kivétel ez alól a 0. pont ami maga az étterem:
+
+Minden pontból csak egy út érkezik, kivétel ez alól a 0. pont ami maga az étterem:
+
+Az étteremre való feltétel:
+
+MTSP esetén a kövezkező megszorítások szükségessége elengedhetetlen a helyes sorrendmátrix beteljesüléséhez:
+
+A definícióban S a pontok egy részhalmaza, r(S) pedig az, hogy ezt a részthalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk m darab út hagyja el és m darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza. 
