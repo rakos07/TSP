@@ -1,0 +1,49 @@
+\Chapter{A kiszállítási problémák általános modelljei}
+
+\Section{Összes eset}
+
+Összes eset:
+
+étterem: egy - több
+futár: egy - több
+kiszállítás: egy - több
+
+(1, 1, 1)
+(1, 1, *)
+(1, *, *)
+(1, *, 1)
+(*, 1, *)
+(*, *, 1)
+(*, 1, 1)
+(*, *, *)
+
+\includegraphics[scale=0.5]{images/complexModel.png} \\
+
+\Section{Kizárt esetek}
+
+\subsection{
+Egy étterem, több futár, egy kiszállítás
+}
+
+Nem opcionális eset, mivel a futárok közül csak az egyik dolgozna, hiszen csak egy kiszállítási hely van. Addig a többi futár csak várna.
+
+\subsection{
+Több étterem, egy futár, egy kiszállítás
+}
+
+Kizárt eset, hiszen több étterem megléte felesleges opcionalizálási célból, ha csak egy kiszállítási hely lett megadva.
+
+\subsection{
+Több étterem, több futár, egy kiszállítás
+}
+
+Az utóbbi két esetből mind a kettő olyan eset, ami nem életszerű. A jelenlegi eset szintén nem az, mivel a már említett esetek rossz tulajdonságait foglalja magába. \\ Több futár - Egy kiszállítási hely: nem valós, hiszen a futárok közül akkor csak egy dolgozna. \\ Több étterem - Egy kiszállítási hely: Felesleges több étterem egy kiszállítási helyhez.
+
+\Section{Vizsgált esetek}
+
+Egy étterem, egy futár, egy kiszállítás\\
+Egy étterem, egy futár, több kiszállítás\\
+Több étterem egy futár, több kiszállítás\\
+Egy étterem, több futár, több kiszállítás\\
+Több étterem, több futár, több kiszállítás\\
+Ezen eseteket optimalizálási célból dolgozatomban a későbbiekben fejtem ki.

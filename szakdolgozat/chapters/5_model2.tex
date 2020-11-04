@@ -1,0 +1,211 @@
+\Chapter{Egy étterem, egy futár, több kiszállítás esete}
+
+
+\Section{
+A probléma megfogalmazása
+}
+
+Egy étterem, egy futár és több kiszállításnál az adott helyzet egészen visszavezethető a klasszikus utazó ügynök problémához.
+A futár elindul az étteremből, érinteni kell az összes kiszállítási pontot, valamint vissza kell érkeznie az étterembe, mindezt úgy, hogy a lehető legkisebb utat tegye meg.
+
+\includegraphics[scale=0.5]{images/Simpletsp.png}
+
+\Section{
+A probléma megoldása
+}
+
+Gibbs faktor \\
+
+A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási kritériumokra levetítve\\
+
+Az egy ügynökös utazó ügynök probléma esetén jelölje V a csúcsok (pontok) halmazát, xi,j azt, hogy az i. pontból megy-e közvetlenül út a j. pontba. Az xi,j 1, ha útvonal köti össze a két pontot, különben 0:
+
+\includegraphics[scale=0.5]{images/1tsp.png}
+
+A dij jelöli az i. és a j. pont távolságát, n pedig a pontok számát. A célfüggvény az alábbi:
+
+\includegraphics[scale=0.5]{images/2tsp.png}
+
+A célfüggvénnyel magát a megtett távolságot szeretnénk optimalizálni. A pontba csak egy él fut be, tehát
+
+\includegraphics[scale=0.5]{images/3tsp.png}
+
+Valamint, minden pontba csakis egy él távozik, ezek szerint
+
+\includegraphics[scale=0.5]{images/4tsp.png}
+
+A sorrendiség a következő feltétel alapján érényesül
+
+\includegraphics[scale=0.5]{images/5tsp.png}
+
+Itt ui az i. pont, uj a j. pont látogatási indexe, ahol az i. pontot hamarabb keresi fel az futár mint a j.-ot
+
+\Section{A megoldás implementálása}
+
+Összes lehetséges út:
+\[
+\dfrac{(n-1)!}{2}
+\]
+Ezek közül kell választanunk, ez ugyanis a Hamilton-körök száma az n pontú teljes gráfban.
+
+A képlet csak $n > 2$ esetén működik.
+
+Ezen importok szükségesek a szimuláció futtatásához
+
+\begin{python}
+from scipy.spatial import distance_matrix
+\end{python}
+
+A cél az, hogy listát készítsünk a pontokról, amelyek mindegyike két koordinátát tartalmaz $(x, y)$, amelyek 0 és 100 közötti véletlen egész számokként kerülnek kiválasztásra. Jelen esetben 10 ilyen pont lesz.
+
+\begin{python}
+points = [random.sample(range(100), 2) for x in range(10)]
+\end{python}
+
+A pontok közötti távolságok kimutatását így oldottam meg.
+
+\begin{python}
+data = Points
+points = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+df = pd.DataFrame(data, columns=['xcord', 'ycord'], index=points)
+pd.DataFrame(
+	distance_matrix(
+		df.values, 
+		df.values
+	), 
+	index=df.index,
+	columns=df.index
+)
+\end{python}
+
+Ezt a kimenetett adta válaszul.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{images/table.png}
+\caption{Kimenet}
+\label{fig:kimenet}
+\end{figure}
+
+Inicializáljuk a pointCount értékét 10-re, ennyi helyre kell a futárnak eljutnia.
+
+\begin{python}
+pointCount = 10
+\end{python}
+
+A travel egy adott számból álló lista (jelen esetben 10 számból áll), amely a pontok meglátogatására utal. Feltételezzük, hogy zárt hurokra van szükség, így az utolsó pont autómatikusan csatlakozik az elsőhöz.
+
+
+\begin{python}
+travel = random.sample(range(pointCount), pointCount);}
+\end{python}
+
+Elindítunk egy ciklust az adott értékekkel
+
+
+\begin{python}
+for tlp in numpy.logspace(0, 5, num = 100000)[::-1]:
+\end{python}
+
+
+Két pont véletlenszerű cseréjével új új utat képzünk. Úgy valósítom meg, hogy választok két számot az i-t és a j-t. Összeállítom a newTravel-t a régi travel másolásával az i indexig, majd összefűzöm a j-edik travelel-t és egészen folytatom addig, amíg a j nem éri el az i-edik pontot, majd befejezem a travel többi részét.
+
+
+\begin{python}
+[i, j] = sorted(random.sample(range(pointCount), 2));
+newTravel = travel[:i] + 
+			travel[j:j + 1] + 
+			travel[i + 1:j] + 
+			travel[i:i + 1] + 
+			travel[j + 1:]
+\end{python}
+
+
+Ha az if értéke igaz akkor a travel megkapja a newTravel értékét, az előzöekben említett csere miatt ez már változott. Az elképzelés az, hogy minimalizálni szeretnénk a pontok közti távolságok költségének összegét. Ehhez a Gibb-s faktor-t használtam fel, aminek lényege, az új állapotba való átmenet valószínűsége. Csak az i-edik és j-edik pontok közötti távolságokat szükséges összegezni, mivel a többi távolság ugyanaz mint a travel-ben mint a newTravel-ben egyaránt. Ha a faktor > 1 akkor az új költség alacsonyabb, travel megkapja a newTravel értékét.
+
+
+\begin{python}
+traveld = sum([
+	math.sqrt(
+		sum([(
+			(
+			  (points[travel[(k + 1) % pointCount]][d]) - 
+			  (points[travel[k % pointCount]][d])
+			) **  2
+		) for d in [0, 1]])
+	) for k in [j, j - 1, i, i - 1]
+])
+newTraveld = sum([
+	math.sqrt(
+		sum([(
+			(
+			  (points[newTravel[(k + 1) % pointCount]][d]) - 
+			  (points[newTravel[k % pointCount]][d])) 
+			** 2
+		) for d in [0, 1]])
+	) for k in [j, j - 1, i, i - 1]
+])
+    if math.exp((traveld - newTraveld) / tlp) > random.random():
+        travel = copy.copy(newTravel);
+\end{python}        
+
+
+Az algoritmus végeztével már csak meg kell jeleníteni a kívánt pontokat, ez kirajzol egy gráfot, amely optimális utat ad. Ehhez a pyplot libary-t használtam
+
+
+\begin{python}
+plt.plot(
+	[points[
+		travel[i % pointCount]][0] for i in range(pointCount + 1)
+	], 
+	[points[
+		travel[i % pointCount]][1] for i in range(pointCount + 1)
+	], 
+	'xb-'
+)
+plt.show()
+\end{python}
+
+Kapcsolódó problémák
+
+Adott teljes élsúlyozott gráf esetén keressük a legkisebb összsúllyal rendelkező Hamilton-kört. Megmutatható, hogy a kiindulási városba való visszatérés megkövetelése nem nehezít a probléma számítási nehézségén, tehát minimális súlyú Hamilton-út keresése egy adott pontból is NP-teljes.
+A probléma egy másik változata, amikor nem a legkisebb súlyú Hamilton-kört keressük, hanem azt, amelyikben a „legnehezebb” él súlya a lehető legkisebb. A logisztikai problémákon túl nagy gyakorlati jelentőséggel bír például a nyomtatott áramkörök gyártása során fúrórobotok ideális mozgásának megtervezésében.
+
+\Section{A megoldás tesztelése}
+
+5 város esetén
+Összehasonlítások száma: 74 434
+\includegraphics[scale=0.4]{images/5.png}
+
+10 város esetén
+Összehasonlítások száma: 68 594
+\includegraphics[scale=0.4]{images/10.png}
+
+15 város esetén
+Összehasonlítások száma: 66 672
+\includegraphics[scale=0.4]{images/15.png}
+
+20 város esetén
+Összehasonlítások száma: 65 265
+\includegraphics[scale=0.4]{images/20.png}
+
+25 város esetén
+Összehasonlítások száma: 67 865
+\includegraphics[scale=0.4]{images/25.png}
+
+30 város esetén
+Összehasonlítások száma: 65 324
+\includegraphics[scale=0.4]{images/30.png}
+
+35 város esetén
+Összehasonlítások száma: 67 230
+\includegraphics[scale=0.4]{images/35.png}
+
+40 város esetén
+Összehasonlítások száma: 66 008
+\includegraphics[scale=0.4]{images/40.png}
+
+
+Több lefuttatott teszt után is megfgyelhető, hogy az összehasonlítások száma 65 ezer és 75 ezer között mozog. Egytől egyig az optimális utat adták.
+
+A következő gráfok megmutatják a kívánt utat vároksok száma szerint. Mivel véletlenszerű számok összehasonlításán alapszik az algoritmus ezáltal az összehasonlítások száma igen magas, viszont stagnál bizonyos értékek között.
