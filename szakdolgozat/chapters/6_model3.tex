@@ -8,30 +8,75 @@ Több étterem esetén meg kell határozni néhány feltételt. Jelen helyzetben
 
 \Section{A probléma megoldása}
 
-A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva\\
-
-A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen V a csúcsok halmaza, xi,j az, hogy megy-e az i. pontból út a j. pontba közvetlenül, di,j az i. és j. pont távolsága. Legyen m az ügynökök száma és ezáltal a kapott célfüggvény:
-
-\includegraphics[scale=0.5]{images/mtsp1.png}
-
-Minden pontba csakis egy út indul, kivétel ez alól a 0. pont ami maga az étterem:
-
-\includegraphics[scale=0.5]{images/mtsp2.png}
-
-Minden pontból csak egy út érkezik, kivétel ez alól a 0. pont ami maga az étterem:
-
-\includegraphics[scale=0.5]{images/mtsp3.png}
-
-Az étteremre való feltétel:
-
-\includegraphics[scale=0.5]{images/mtsp4.png}
-
-MTSP esetén a kövezkező megszorítások szükségessége elengedhetetlen a helyes sorrendmátrix beteljesüléséhez:
-
-\includegraphics[scale=0.5]{images/mtsp5.png}
-
-A definícióban S a pontok egy részhalmaza, r(S) pedig az, hogy ezt a részthalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk m darab út hagyja el és m darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza. 
+Maga a probléma egy már megoldott helyzetre vezethető vissza. Az egy étterem, egy futár, több kiszállítás eseténél mindig ugyanabba az egy étterembe kellett visszatérnie. Az ott alkalmazott dolgok érvényesek erre az esetre is, annyi eltéréssel, hogy ha kiszállította egy étterem rendeléseit az utolsó megállóhelye a folyamatban a következő étterem (nem az amiből indult). A folyamat következő lépése pedig innen indul, a futár kiszállítja az összes rendelést és egy harmadik étterembe érkezik utolsóképp. Maga ez a folyamat mindaddig tart, amíg a futár meg nem látogatja az összes éttermet és vissza nem tér a kezdő, kiinduló étterembe. 
 
 \Section{A megoldás implementálása}
 
+Az előző megoldást felhasználva, pár változtatást el kellett végezni, hogy helyesen működjön erre az esetre.
+
+Be kellett vezetni egy összegzést ami az éttermek számát határozza meg.
+\begin{python}
+restaurantCount = 4
+\end{python}
+
+Ezt követően feltöltöttem egy listát random generált x és y koordinátákkal. Maga a lista hossza az előbb meghatározott restaurantCount -al egyenlő.
+
+\begin{python}
+restaurants = [random.sample(range(100),2) for x in range(restaurantCount)] 
+\end{python}
+
+Szükségszerű volt bevezetni egy külső ciklust, ami az éttermek számáig megy. Ezáltal nyerhetőek vissza az adott étterem koordinátái.
+
+\begin{python}
+for l in range(len(restaurants))
+\end{python}
+
+A cikluson belül a pontok számát csökkentenünk kellett egyel, valamint az első helyre hozzáadni a restaurants adott l elemét. Ezáltal meg van oldava, hogy a ciklus mindig az éttermektől induljon.
+
+\begin{python}
+travel = [random.sample(range(100), 2) for x in range(pointCount - 1)]
+
+travel.insert(0, restaurants[l])
+\end{python}
+
+Meg kell még oldani, hogy a ciklus utolsó eleme a következő étterem koordinátája legyen. Figyelembe kellett venni azt is, hogy az utolsó étterem utolsó pontja az első étterem koordinátáival kell, hogy megegyezzenek. Szükségessé vált a kör megszakítása is a gráfban. 
+Ezek a következőképpen néznek ki. 
+
+\begin{python}
+helperX = travel[i % pointCount]][0] for i in range(pointCount)
+helperY = travel[i % pointCount]][1] for i in range(pointCount)
+
+if l < (len(restaurants) - 1):
+	helperX.append(restaurants[l+1][0])
+	helperY.append(restaurants[l+1][1])
+else:
+	helperX.append(restaurants[0][0])
+	helperX.append(restaurants[0][1])
+\end{python}
+
+
 \Section{A megoldás tesztelése}
+
+Teszt eset: 4 étterem, 36 kiszállítási hely. \\\
+\\\
+Első étterem:
+Poziciója: (71, 42)
+
+\includegraphics[scale=0.8]{images/tsp1MR.png}
+
+Második étterem:
+Poziciója: (32, 21)
+
+\includegraphics[scale=0.8]{images/tsp2MR.png}
+
+Harmadik étterem:
+Poziciója: (37, 27)
+
+\includegraphics[scale=0.8]{images/tsp3MR.png}
+
+Negyedik étterem:
+Poziciója: (3, 26)
+
+\includegraphics[scale=0.8]{images/tsp4MR.png}
+
+Jól megfigyelhető, hogy az utolsó étterem utolsó pontja visszatér az első étterem koordinátáihoz(71, 42).
