@@ -4,7 +4,13 @@
 
 Több étterem esetén meg kell határozni néhány feltételt. Jelen helyzetben a futár elindul az egyik étteremből kiszállít mindent, majd egy másik étterembe érkezik ezt követően és annak a rendeléseit is kiszállítja. Időben is meg kell szabni néhány határt, miszerint az első étteremből való indulás pillanatáig beérkezett rendeléseket szállítja csak ki az összes étteremből. Miután sikeresen kivitte az összes rendelést visszatér a kezdő étterembe és kezdődik előlről a folyamat. Maga a folyamat egy onmagát ismételő klasszikus utazó ügynök probléma, annyi eltéréssel, hogy nem ugyan abba az étterembe kell érkeznie ahonnan indult, hanem a hozzá legközelebb esőbe emibe még nem járt az adott ciklusban.
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.6]{images/Circulartsp.png}
+\caption{Több étterem, egy futár, több kiszállítás modellje}
+\label{fig:model3}
+\end{figure}
+
 
 \Section{A probléma megoldása}
 
@@ -59,24 +65,32 @@ else:
 
 Teszt eset: 4 étterem, 36 kiszállítási hely. \\\
 \\\
-Első étterem:
-Poziciója: (71, 42)
-
-\includegraphics[scale=0.8]{images/tsp1MR.png}
-
-Második étterem:
-Poziciója: (32, 21)
-
-\includegraphics[scale=0.8]{images/tsp2MR.png}
-
-Harmadik étterem:
-Poziciója: (37, 27)
-
-\includegraphics[scale=0.8]{images/tsp3MR.png}
-
-Negyedik étterem:
-Poziciója: (3, 26)
-
-\includegraphics[scale=0.8]{images/tsp4MR.png}
-
 Jól megfigyelhető, hogy az utolsó étterem utolsó pontja visszatér az első étterem koordinátáihoz(71, 42).
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/tsp1MR.png}
+\caption{Első étterem poziciója: (71, 42)}
+\label{fig:tspMR1}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/tsp2MR.png}
+\caption{Második étterem poziciója: (32, 21)}
+\label{fig:tspMR2}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/tsp3MR.png}
+\caption{Harmadik étterem poziciója: (37, 27)}
+\label{fig:tspMR3}
+\end{figure}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.8]{images/tsp4MR.png}
+\caption{Negyedik étterem poziciója: (3, 26)}
+\label{fig:tspMR4}
+\end{figure}

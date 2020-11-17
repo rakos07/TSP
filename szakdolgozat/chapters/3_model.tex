@@ -17,7 +17,13 @@ kiszállítás: egy - több
 (*, 1, 1)
 (*, *, *)
 
-\includegraphics[scale=0.5]{images/complexModel.png} \\
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.5]{images/complexModel.png}
+\caption{Éttermi rendelés}
+\label{fig:generalModel}
+\end{figure}
 
 \Section{Kizárt esetek}
 
@@ -37,7 +43,9 @@ Kizárt eset, hiszen több étterem megléte felesleges opcionalizálási célb�
 Több étterem, több futár, egy kiszállítás
 }
 
-Az utóbbi két esetből mind a kettő olyan eset, ami nem életszerű. A jelenlegi eset szintén nem az, mivel a már említett esetek rossz tulajdonságait foglalja magába. \\ Több futár - Egy kiszállítási hely: nem valós, hiszen a futárok közül akkor csak egy dolgozna. \\ Több étterem - Egy kiszállítási hely: Felesleges több étterem egy kiszállítási helyhez.
+Az utóbbi két esetből mind a kettő olyan eset, ami nem életszerű. A jelenlegi eset szintén nem az, mivel a már említett esetek rossz tulajdonságait foglalja magába. \\ 
+Több futár - Egy kiszállítási hely: nem valós, hiszen a futárok közül akkor csak egy dolgozna. \\
+Több étterem - Egy kiszállítási hely: Felesleges több étterem egy kiszállítási helyhez.
 
 \Section{Vizsgált esetek}
 

@@ -5,7 +5,12 @@
 Ebben az esetben egy étterem található a városban, amelyből csak egy futár szállít ki mindig csak egy címre.
 Bonyolultságát tekintve a legrövidebb utat kell megtalálni két pont között feltételezve azt, hogy egy pontból a másikba nem lehet közvetlenül eljutni, hanem más pontokat érintve csak. Ezáltal egy gráf élein kell végigmenni és közben keresni a legrövidebb a legrövidebb távot. Az optimális út meghatározása után venni kell ezen út hosszúnak kétszeresét, mivel a futár a szállítást követően vissza kell, hogy térjen az étterembe. Két pont közötti hossz meghatározására kiválló példa az egyik leginkább ismert algoritmus az A* algoritmus.
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/Astar.png}
+\caption{Egy étterem, egy futár, egy kiszállítás modellje}
+\label{fig:model1}
+\end{figure}
 
 \Section{A probléma megoldása}
 
@@ -143,7 +148,8 @@ for way in newWay:
         continue
 
     way.g = currentNode.g + 1
-    way.h = ((way.position[0] - endNode.position[0]) ** 2) + ((way.position[1] - endNode.position[1]) ** 2)
+    way.h = ((way.position[0] - endNode.position[0]) ** 2) + 
+    		((way.position[1] - endNode.position[1]) ** 2)
     way.f = way.g + way.h
 
     for openNode in openList:
@@ -194,14 +200,25 @@ cv2.imwrite('AStarResult.bmp', img)
 
 \Section{A megoldás tesztelése}
 
+A megoldás teszteléséhez nélkülözhetetlen egy bmp kép. A program megfelelő futásához elengedhetetlen, hogy a kép hosszúsága és szélessége megegyezzen. A fehér színnel kell kitelteni a járható utat, feketével a járhatatlant. Kék szín kell, hogy jelezze az éttermet, piros pedig a kiszállítási helyet. Amennyiben van lehetséges út az utóbbi két pont között, az alakalmazás megtalálja, valamint ha több út is tartozik hozzá, akkor a lehető legrövidebbet adja válaszul. Az eredmény egy képet generál, amin sárgával van feltüntetve az optimális út.
 
-Egy kézzel rajzolt, várostérképe a következőképpen néz ki.
-\\
-\includegraphics[scale=0.8]{images/AStarProblem.jpg}
-\\
+Egy kézzel rajzolt, várostérkép a következőképpen néz ki.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{images/AStarProblem.jpg}
+\caption{Teszt bemenet}
+\label{fig:model1problem}
+\end{figure}
+
 A megoldást felhasználva a következő képet adja válaszul.
 
-\includegraphics[scale=0.8]{images/AStarResult.jpg}
+\begin{figure}[h!]
+\centering
+\includegraphics[scale=0.6]{images/AStarResult.jpg}
+\caption{Teszt kimenet}
+\label{fig:model1result}
+\end{figure}
 
 A kép kíválóan szemlélteti, hogy a optimális utat adott eredményül, ezáltal az algoritmus felhasználható az adott feladathoz.
 

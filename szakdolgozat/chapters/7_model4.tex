@@ -4,91 +4,367 @@
 
 Jelen eset reprezentálja az egy lerakatos több ügynökös utazó ügynök problémát. Feltételek meghatározásánál nélkülözhetetlen szempont, hogy határokat szabjunk az egyes futároknak, hogy ki milyen területre szállít ki. Ennek meghatározásánál fontos a kiszállítási címek közti táv figyelembe vétele. Ezek meghatározása után maga a probléma leegyszerűsíthető egy klasszikus utazó ügynök problémára.
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.7]{images/Onedepotmtsp.png}
+\caption{Egy étterem, több futár, több kiszállítás modellje}
+\label{fig:model4}
+\end{figure}
 
 \Section{A probléma megoldása}
 
 A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva\\
 
-A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen V a csúcsok halmaza, xi,j az, hogy megy-e az i. pontból út a j. pontba közvetlenül, di,j az i. és j. pont távolsága. Legyen m az ügynökök száma és ezáltal a kapott célfüggvény:
+A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen V a csúcsok halmaza, $x_{i,j}$ az, hogy megy-e az $i.$ pontból út a $j.$ pontba közvetlenül, $d_{i.j}$ az $i.$ és $j.$ pont távolsága. Legyen $m$ az ügynökök száma és ezáltal a kapott célfüggvény:
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/mtsp1.png}
+\end{figure}
 
 Minden pontba csakis egy út indul, kivétel ez alól a 0. pont ami maga az étterem:
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/mtsp2.png}
+\end{figure}
 
 Minden pontból csak egy út érkezik, kivétel ez alól a 0. pont ami maga az étterem:
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/mtsp3.png}
+\end{figure}
 
 Az étteremre való feltétel:
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/mtsp4.png}
+\end{figure}
 
 MTSP esetén a kövezkező megszorítások szükségessége elengedhetetlen a helyes sorrendmátrix beteljesüléséhez:
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/mtsp5.png}
+\end{figure}
 
-A definícióban S a pontok egy részhalmaza, r(S) pedig az, hogy ezt a részthalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk m darab út hagyja el és m darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza. 
+A definícióban $S$ a pontok egy részhalmaza, $r(S)$ pedig az, hogy ezt a részthalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk m darab út hagyja el és m darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza. 
 
 Magát a problémát genetikus algoritmussal oldottam meg.\\
 
 Genetikus algoritmus \\
 
-A genetikus algoritmusokat számítógépes szimulációkkal implementálják. A keresési tér elemei alkotják a populáció egyedeit, melyeket keresztezni (más szóval rekombinálni) és mutálni lehet, így új egyedek hozhatók létre. A keresési téren értelmezett célfüggvényt ebben a kontextusban szokásos fitness függvénynek is nevezni. A genetikus algoritmus működése során egyrészt új egyedeket hoz létre a rekombináció és a mutáció operátorokkal, másrészt kiszűri a rosszabb fitness függvény értékkel rendelkező egyedeket és eltávolítja a populációból. Egyes esetekben az ilyen algoritmusok konvergálnak az optimumhoz.
+A genetikus algoritmust számítógépes szimulációkkal reprezentálják. A keresési teret populációs egyedek alkotják. Ezen egyedeket lehet keresztezni (más szóval rekombinálni) és mutálni is, ezáltal új egyedek kreálhatóak. Fitnesz függvénynek nevezzük a keresési téren értelmezett célfüggvényt. Az alfgoritmus működése során új egyedeket képes létrehozni a rekombinációs és mutációs operátorokkal, valamint kiszűri a rosszabb fitnesz függvény értékkel rendelkező egyedeket, majd ezt követően kiszedi azokat a populációból.
 
 Folyamata: \\
 
-1. Inicializáció: A kezdeti populációt legegyszerűbb véletlenszerűen generálni. A populáció mérete a probléma természetétől függ, de leggyakrabban néhány száz vagy néhány ezer egyedből áll. Hagyományosan az egyedek a keresési téren egyenletesen oszlanak el, viszont egyes esetekben olyan részeken több egyedet generálnak, ahol sejthető az optimum. \\
+1. Inicializáció:  Az induló populációt legkönnyebben véletlenszerű számokkal tudjuk létrehozni. Maga a populáció mérete erősen függ a problémától. A keresési téren az egyedek általában egyenletesen oszlanak el, viszont számos esetben több egyedet generál a feltételezhető optimum közelében. \\
 
-2. Kiválasztás: Minden sikeres generációban a jelenlegi populáció egy része kiválasztásra kerül szaporodásra. Általában fitnesz alapján történik, ahol a fittebb egyedek (a fitnesz függvény szerint) valószínűbben kerülnek kiválasztásra. Bizonyos metódusok minden egyed fitnesz-ét megnézik és választják ki a legjobbat, de más metódusok csak néhány, véletlen példányt néznek meg, mert a teljes folyamat túl hosszú lenne. A fitness függvény a példány minőségét méri. A függvény mindig probléma függő. Néhány problémánál nehéz, akár lehetetlen definiálni a fitnesz számolás műveletét; ilyenkor a példány fenotípusát is használhatjuk, vagy akár interaktív kiválasztást is használhatunk. \\
+2. Kiválasztás: Az összes eredményes generációban szelekcióra kerül az aktuális populáció egy része szaporodásra. A kiválasztás rendszerint fitnesz alapján történik, ahol a fitnesz függvény szerinti legfitebb egyedek valószínűbben kerülnek szelekcióra. Számos metódus az összes egyed fitneszét figyelembe veszi és ezek alapján keresi a legjobbat. Akadnak olyan metódusok is amik csak néhány véletlenszerűen kiválasztott példányt vizsgálnak. A példány minőségének mérésére használják a fitnesz függvényt. Ezen függvény bonyolultsága minden esetben a problémától függ. \\
 
-3. Szaporítás: Egyedekből újabb egyedeket a kétoperandusú keresztezés (vagy rekombináció) művelettel, és az egyoperandusú mutáció művelettel lehet. Ezeket az operátorokat általában véletlenszerűen alkalmazzák. \\
+3. Szaporítás: Egyoperandusú mutációval valamint kétoperandusú keresztezési műveletek által lehetséges a példányokból újabb példányokat kreálni. Ezen operátorokat véletlenszerűen használják. \\
 
-4. Leállás: A genetikus algoritmusok rendszerint addig futnak, amíg egy leállási feltétel nem teljesül. Gyakori leállási feltételek a következők: Adott generációszám elérése vagy ha a legjobb egyed fitness értéke már nem javul jelentős mértékben egy-egy iterációval.\\
+4. Leállás: A genetikus algoritmus addig fut amíg be nem teljesül a leállási feltétel.\\
 
+Előnye: Kedvező eredménnyel használható majdnem minden problémára. Folytonos, illetve diszkrét problémáknál úgyszintén alkalmazható. A folyamatok könnyen páhuzamosíthatóak általa.
+
+Hátránya: A megfelelő operátor kiválasztása nehéz. Paraméterezése és a leállási feltétel meghatározása sok időt igényel, valamint nem garantált a globális optimum elérése.
+
+Elitizmus: Ebben az esetben a jelenlegi populáció legjobb egyedét mindig, módosítás nélkül visszük tovább az új populációba.
 
 \Section{A megoldás implementálása}
 
-A programhoz tartozó fájlok\\
+\subsection{
+Dustbin
+}
 
-Dustbin\\
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.7]{images/dustbin.png}
+\caption{Dustbin osztálydiagram}
+\label{fig:dustbin}
+\end{figure}
 
-\includegraphics[scale=0.8]{images/dustbin.png}
+Inicializáló metóduson kívűl található benne még olyan folyamat ami felel, az x és y értékek feldolgozásával. Ezen felül az euklidészi távolság számítás is itt foglal helyet. Utolsó sorban pedig egy formázó metódus ami a szöveget helyesen formázottan adja vissza.
 
-A pontok reprezentálásához nélkülözhetetlen osztály.
-\\
-Galogical\\
+\subsection{
+Galogical
+}
 
+Az eljárás lényegi, logikai része itt valósul meg.
+
+\begin{figure}[!htb]
+\centering
 \includegraphics[scale=0.8]{images/galogic.png}
+\caption{Galogical osztálydiagram}
+\label{fig:galogical}
+\end{figure}
 
-A genetikus algoritmus logikájához nélkülözhetetlen dolgokat tartalmazó osztály.
-\\
-Globals\\
+A populáció fejlesztésére használt metódus. Tartalmaz egy ellenőrzést, hogy kívánunk-e elitizmussal élni a futás alatt vagy sem. Ezenfelül a keresztezés és mutáció operátorokat meghívó programkódok is itt foglalnak helyet.
 
-A szimuláció futtatásához szükséges változókat, valamint a generált tartalmakat foglalja magában.
-\\
-Main\\
+\begin{python}
+@classmethod
+def evolvePopulation(cls, pop):
 
-Maga a futtatható metódus.
-\\
-Population\\
+    newPopulation = Population(pop.populationSize, False)
 
+    elitismOffset = 0
+    if elitism:
+        newPopulation.saveRoute(0, pop.getFittest())
+        elitismOffset = 1
+
+    for i in range(elitismOffset, newPopulation.populationSize):
+        parent1 = cls.tournamentSelection(pop)
+        parent2 = cls.tournamentSelection(pop)
+        child = cls.crossover(parent1, parent2)
+        newPopulation.saveRoute(i, child)
+
+    for i in range(elitismOffset, newPopulation.populationSize):
+        cls.mutate(newPopulation.getRoute(i))
+
+    return newPopulation
+\end{python}
+A keresztezési operátor implementációját a következőképpen kódoltam.
+
+\begin{python}
+@classmethod
+def crossover (cls, parent1, parent2):
+    child = Route()
+    child.base.append(Dustbin(-1, -1))
+    startPos = 0
+    endPos = 0
+    while (startPos >= endPos):
+        startPos = random.randint(1, numNodes-1)
+        endPos = random.randint(1, numNodes-1)
+
+    parent1.base = [parent1.route[0][0]]
+    parent2.base = [parent2.route[0][0]]
+
+    for i in range(numDeliverer):
+        for j in range(1, parent1.routeLengths[i]):
+            parent1.base.append(parent1.route[i][j])
+
+    for i in range(numDeliverer):
+        for j in range(1, parent2.routeLengths[i]):
+            parent2.base.append(parent2.route[i][j])
+
+    for i in range(1, numNodes):
+        if i > startPos and i < endPos:
+            child.base[i] = parent1.base[i]
+
+    for i in range(numNodes):
+        if not(child.containsDustbin(parent2.base[i])):
+            for i1 in range(numNodes):
+                if child.base[i1].checkNull():
+                    child.base[i1] =  parent2.base[i]
+                    break
+
+    k=0
+    child.base.pop(0)
+    for i in range(numDeliverer):
+        child.route[i].append(RouteManager.getDustbin(0))
+        for j in range(child.routeLengths[i]-1):
+            child.route[i].append(child.base[k])
+            k+=1
+    return child
+\end{python}
+A mutáció operátor kódja az alábbi.
+
+\begin{python}
+@classmethod
+def mutate (cls, route):
+    index1 = 0
+    index2 = 0
+    while index1 == index2:
+        index1 = random.randint(0, numDeliverer - 1)
+        index2 = random.randint(0, numDeliverer - 1)
+
+    route1startPos = 0
+    route1lastPos = 0
+    while route1startPos >= route1lastPos or route1startPos == 1:
+        route1startPos = random.randint(1, route.routeLengths[index1] - 1)
+        route1lastPos = random.randint(1, route.routeLengths[index1] - 1)
+
+    route2startPos = 0
+    route2lastPos = 0
+    while route2startPos >= route2lastPos or route2startPos == 1:
+        route2startPos = random.randint(1, route.routeLengths[index2] - 1)
+        route2lastPos= random.randint(1, route.routeLengths[index2] - 1)
+
+    swap1 = []
+    swap2 = [] 
+
+    if random.randrange(1) < mutationRate:
+        for i in range(route1startPos, route1lastPos + 1):
+            swap1.append(route.route[index1].pop(route1startPos))
+
+        for i in range(route2startPos, route2lastPos + 1):
+            swap2.append(route.route[index2].pop(route2startPos))
+
+        del1 = (route1lastPos - route1startPos + 1)
+        del2 = (route2lastPos - route2startPos + 1)
+
+        route.route[index1][route1startPos:route1startPos] = swap2
+        route.route[index2][route2startPos:route2startPos] = swap1
+
+        route.routeLengths[index1] = len(route.route[index1])
+        route.routeLengths[index2] = len(route.route[index2])
+\end{python}
+
+A tournamentSelection metódus kiválasztja a legfitebb kromószómahalmazt.
+
+\begin{python}
+@classmethod
+def tournamentSelection (cls, pop):
+    tournament = Population(tournamentSize, False)
+
+    for i in range(tournamentSize):
+        randomInt = random.randint(0, pop.populationSize-1)
+        tournament.saveRoute(i, pop.getRoute(randomInt))
+
+    fittest = tournament.getFittest()
+    return fittest
+\end{python}
+
+\subsection{
+Globals
+}
+
+Az inicializáló adatokat foglalja magában, ezen kívűl még két metódust is tartalmaz.
+
+Az inicializáló adatokat három részre lehet osztani.
+
+1. A koordináták tartományát lehet vele manipulálni.
+
+\begin{python}
+xMax = 100
+yMax = 100
+seedValue = 1
+numNodes = 40
+numGenerations = 20
+\end{python}
+
+2. A populációra vonatkozó adatok itt módosíthatóak.
+
+\begin{python}
+populationSize = 20
+mutationRate = 0.02
+tournamentSize = 1
+elitism = True
+\end{python}
+
+3. Ezen részben lehet megadni a futárok számát is.
+
+\begin{python}
+numDeliverer = 2
+\end{python}
+
+A két metódus pedig random adatok generálására szolgál.
+
+\subsection{
+Main
+}
+
+Maga a futtatható metódus. Ebben értékelődik ki az optimális útvonal valamint egy diagram ami y tengelyén látható a fittnesz függvény érték (távolság), x tengelyén pedig a generációk száma.
+
+\subsection{
+Population
+}
+
+\begin{figure}[!htb]
+\centering
 \includegraphics[scale=0.8]{images/population.png}
+\caption{Population osztálydiagram}
+\label{fig:population}
+\end{figure}
 
-Az egyedeken végzett műveletekhez szükséges oszály.
-\\
-Route\\
+Az egyedeken végzett műveletekhez szükséges oszály. Tartalmaz egy inicializáló metódust, ezen felül itt kapott helyet az út mentése, kiolvasása is. A legfitebb érték meghatározásán kívűl a populációk összehasonlításával is foglalkozik az oszály. 
 
+\subsection{
+Route
+}
+
+\begin{figure}[!htb]
+\centering
 \includegraphics[scale=0.8]{images/route.png}
+\caption{Route osztálydiagram}
+\label{fig:route}
+\end{figure}
 
-Az optimális út kiszámításához használt osztály.
-\\
-Routemanager\\
+Az optimális út kiszámításához használt osztály. Az alap inicializáláson kívűl jelen vannak még a helyes út kiszámításához használatos metódosok. Végezetül egy szövegformázó metódus is itt kapott helyet.
+\\\
+\\\
+\\\
+\\\
 
+\subsection{
+Routemanager
+}
+
+\begin{figure}[!htb]
+\centering
 \includegraphics[scale=0.8]{images/routemanager.png}
+\caption{Routemanager osztálydiagram}
+\label{fig:routeManager}
+\end{figure}
 
-A egyedeket kezelő osztály
+Az oszály egyedeket kezel, három osztálymetódusból áll amik az optimális út eléréséhez nélkülözhetetlenek.
+
+\\\
+\\\
+\\\
+\\\
+\\\
+\\\
 
 \Section{A megoldás tesztelése}
+
+\subsection{
+Elitizmus nélkül
+}
+
+A kiszállítási helyek száma: 40\\
+Generációk száma: 40\\
+Populáció nagysága: 20\\
+Elitizmus: Hamis\\
+Futárok száma: 3\\
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.7]{images/MTSPMultiDepo1.png}
+\caption{Fitnessz értékek generiónként elitizmus nélkül}
+\label{fig:MTSPMultiDepo1}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{images/MTSPMultiDepo1Route.png}
+\caption{Futárok útjai elitizmus nélkül}
+\label{fig:MTSPMultiDepo1Route}
+\end{figure}
+
+\subsection{
+Elitizmussal
+}
+
+A kiszállítási helyek száma: 40\\
+Generációk száma: 40\\
+Populáció nagysága: 20\\
+Elitizmus: Igaz\\
+Futárok száma: 3\\
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale=0.7]{images/MTSPMultiDepo2.png}
+\caption{Fitnessz értékek generiónként elitizmussal}
+\label{fig:MTSPMultiDepo2}
+\end{figure}
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[width=\textwidth]{images/MTSPMultiDepo2Route.png}
+\caption{Futárok útjai elitizmussal}
+\label{fig:MTSPMultiDepo2Route}
+\end{figure}

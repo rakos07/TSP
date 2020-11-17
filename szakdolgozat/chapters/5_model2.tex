@@ -1,44 +1,55 @@
 \Chapter{Egy étterem, egy futár, több kiszállítás esete}
 
-
-\Section{
-A probléma megfogalmazása
-}
+\Section{A probléma megfogalmazása}
 
 Egy étterem, egy futár és több kiszállításnál az adott helyzet egészen visszavezethető a klasszikus utazó ügynök problémához.
 A futár elindul az étteremből, érinteni kell az összes kiszállítási pontot, valamint vissza kell érkeznie az étterembe, mindezt úgy, hogy a lehető legkisebb utat tegye meg.
 
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/Simpletsp.png}
+\caption{Egy étterem, egy futár, több kiszállítás modellje}
+\label{fig:model2}
+\end{figure}
 
-\Section{
-A probléma megoldása
-}
+\Section{A probléma megoldása}
 
-Gibbs faktor \\
+Gibbs-faktor
 
-A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási kritériumokra levetítve\\
+A Gibbs-faktor reprezentálja az új állapotba való áttérés valószínűségét.\\
 
-Az egy ügynökös utazó ügynök probléma esetén jelölje V a csúcsok (pontok) halmazát, xi,j azt, hogy az i. pontból megy-e közvetlenül út a j. pontba. Az xi,j 1, ha útvonal köti össze a két pontot, különben 0:
-
+A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási kritériumokra levetítve.
+Az egy ügynökös utazó ügynök probléma esetén jelölje V a csúcsok (pontok) halmazát, $x_{i,j}$ azt, hogy az $i.$ pontból megy-e közvetlenül út a $j.$ pontba. Az $x_{i,j}$ 1, ha útvonal köti össze a két pontot, különben 0:
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/1tsp.png}
+\end{figure}
 
-A dij jelöli az i. és a j. pont távolságát, n pedig a pontok számát. A célfüggvény az alábbi:
-
+A $d_{i,j}$ jelöli az $i.$ és a $j.$ pont távolságát, $n$ pedig a pontok számát. A célfüggvény az alábbi:
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/2tsp.png}
+\end{figure}
 
 A célfüggvénnyel magát a megtett távolságot szeretnénk optimalizálni. A pontba csak egy él fut be, tehát
-
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/3tsp.png}
+\end{figure}
 
 Valamint, minden pontba csakis egy él távozik, ezek szerint
-
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/4tsp.png}
+\end{figure}
 
 A sorrendiség a következő feltétel alapján érényesül
-
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.5]{images/5tsp.png}
+\end{figure}
 
-Itt ui az i. pont, uj a j. pont látogatási indexe, ahol az i. pontot hamarabb keresi fel az futár mint a j.-ot
+Itt $u_{i}$ az $i.$ pont, $u_{j}$ a $j.$ pont látogatási indexe, ahol az $i.$ pontot hamarabb keresi fel az futár mint a $j.$-ot
 
 \Section{A megoldás implementálása}
 
@@ -83,7 +94,7 @@ Ezt a kimenetett adta válaszul.
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\textwidth]{images/table.png}
-\caption{Kimenet}
+\caption{Pontok közötti távolságmátrix}
 \label{fig:kimenet}
 \end{figure}
 
@@ -166,46 +177,63 @@ plt.plot(
 plt.show()
 \end{python}
 
-Kapcsolódó problémák
-
-Adott teljes élsúlyozott gráf esetén keressük a legkisebb összsúllyal rendelkező Hamilton-kört. Megmutatható, hogy a kiindulási városba való visszatérés megkövetelése nem nehezít a probléma számítási nehézségén, tehát minimális súlyú Hamilton-út keresése egy adott pontból is NP-teljes.
-A probléma egy másik változata, amikor nem a legkisebb súlyú Hamilton-kört keressük, hanem azt, amelyikben a „legnehezebb” él súlya a lehető legkisebb. A logisztikai problémákon túl nagy gyakorlati jelentőséggel bír például a nyomtatott áramkörök gyártása során fúrórobotok ideális mozgásának megtervezésében.
-
 \Section{A megoldás tesztelése}
 
-5 város esetén
-Összehasonlítások száma: 74 434
+A pointCount állításával adhatjuk meg, hogy hány helyre is kell mennie a futárnak. Ennek módosításával több lefuttatott teszt után is megfigyelhető, hogy az összehasonlítások száma 65 ezer és 75 ezer között mozog. Egytől egyig az optimális utat adták. Mivel véletlenszerű számok összehasonlításán alapszik az algoritmus ezáltal az összehasonlítások száma igen magas, viszont stagnál bizonyos értékek között.
+
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/5.png}
+\caption{5 kiszállítási hely esetén az összehasonlítások száma: 74 434}
+\label{fig:tsp5location}
+\end{figure}
 
-10 város esetén
-Összehasonlítások száma: 68 594
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/10.png}
+\caption{10 kiszállítási hely esetén az összehasonlítások száma: 68 594}
+\label{fig:tsp10location}
+\end{figure}
 
-15 város esetén
-Összehasonlítások száma: 66 672
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/15.png}
+\caption{15 kiszállítási hely esetén az összehasonlítások száma: 66 672}
+\label{fig:tsp15location}
+\end{figure}
 
-20 város esetén
-Összehasonlítások száma: 65 265
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/20.png}
+\caption{20 kiszállítási hely esetén az összehasonlítások száma: 65 265}
+\label{fig:tsp20location}
+\end{figure}
 
-25 város esetén
-Összehasonlítások száma: 67 865
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/25.png}
+\caption{25 kiszállítási hely esetén az összehasonlítások száma: 67 865}
+\label{fig:tsp25location}
+\end{figure}
 
-30 város esetén
-Összehasonlítások száma: 65 324
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/30.png}
+\caption{30 kiszállítási hely esetén az összehasonlítások száma: 65 324}
+\label{fig:tsp30location}
+\end{figure}
 
-35 város esetén
-Összehasonlítások száma: 67 230
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/35.png}
+\caption{35 kiszállítási hely esetén az összehasonlítások száma: 67 230}
+\label{fig:tsp35location}
+\end{figure}
 
-40 város esetén
-Összehasonlítások száma: 66 008
+\begin{figure}[h!]
+\centering
 \includegraphics[scale=0.4]{images/40.png}
+\caption{40 kiszállítási hely esetén az összehasonlítások száma: 66 008}
+\label{fig:tsp40location}
+\end{figure}
 
-
-Több lefuttatott teszt után is megfgyelhető, hogy az összehasonlítások száma 65 ezer és 75 ezer között mozog. Egytől egyig az optimális utat adták.
-
-A következő gráfok megmutatják a kívánt utat vároksok száma szerint. Mivel véletlenszerű számok összehasonlításán alapszik az algoritmus ezáltal az összehasonlítások száma igen magas, viszont stagnál bizonyos értékek között.

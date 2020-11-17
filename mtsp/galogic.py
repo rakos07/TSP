@@ -1,43 +1,32 @@
-'''
-The main helper class for Genetic Algorithm to perform
-crossover, mutation on populations to evolve them
-'''
 from population import *
 
 class GA:
 
     @classmethod
-    # Evolve pop
     def evolvePopulation(cls, pop):
 
         newPopulation = Population(pop.populationSize, False)
 
         elitismOffset = 0
-        # If fittest chromosome has to be passed directly to next generation
         if elitism:
             newPopulation.saveRoute(0, pop.getFittest())
             elitismOffset = 1
 
-        # Performs tournament selection followed by crossover to generate child
         for i in range(elitismOffset, newPopulation.populationSize):
             parent1 = cls.tournamentSelection(pop)
             parent2 = cls.tournamentSelection(pop)
             child = cls.crossover(parent1, parent2)
-            # Adds child to next generation
             newPopulation.saveRoute(i, child)
 
-
-        # Performs Mutation
         for i in range(elitismOffset, newPopulation.populationSize):
             cls.mutate(newPopulation.getRoute(i))
 
         return newPopulation
 
-    # Function to implement crossover operation
     @classmethod
     def crossover (cls, parent1, parent2):
         child = Route()
-        child.base.append(Dustbin(-1, -1)) # since size is (numNodes - 1) by default
+        child.base.append(Dustbin(-1, -1))
         startPos = 0
         endPos = 0
         while (startPos >= endPos):
@@ -47,12 +36,12 @@ class GA:
         parent1.base = [parent1.route[0][0]]
         parent2.base = [parent2.route[0][0]]
 
-        for i in range(numTrucks):
+        for i in range(numDeliverer):
             for j in range(1, parent1.routeLengths[i]):
                 parent1.base.append(parent1.route[i][j])
 
 
-        for i in range(numTrucks):
+        for i in range(numDeliverer):
             for j in range(1, parent2.routeLengths[i]):
                 parent2.base.append(parent2.route[i][j])
 
@@ -69,21 +58,20 @@ class GA:
 
         k=0
         child.base.pop(0)
-        for i in range(numTrucks):
-            child.route[i].append(RouteManager.getDustbin(0)) # add same first node for each route
+        for i in range(numDeliverer):
+            child.route[i].append(RouteManager.getDustbin(0))
             for j in range(child.routeLengths[i]-1):
-                child.route[i].append(child.base[k]) # add shuffled values for rest
+                child.route[i].append(child.base[k])
                 k+=1
         return child
 
-    # Mutation opeeration
     @classmethod
     def mutate (cls, route):
         index1 = 0
         index2 = 0
         while index1 == index2:
-            index1 = random.randint(0, numTrucks - 1)
-            index2 = random.randint(0, numTrucks - 1)
+            index1 = random.randint(0, numDeliverer - 1)
+            index2 = random.randint(0, numDeliverer - 1)
 
         route1startPos = 0
         route1lastPos = 0
@@ -97,11 +85,10 @@ class GA:
             route2startPos = random.randint(1, route.routeLengths[index2] - 1)
             route2lastPos= random.randint(1, route.routeLengths[index2] - 1)
 
-        swap1 = [] # values from 1
-        swap2 = [] # values from 2
+        swap1 = []
+        swap2 = []
 
         if random.randrange(1) < mutationRate:
-            # pop all the values to be replaced
             for i in range(route1startPos, route1lastPos + 1):
                 swap1.append(route.route[index1].pop(route1startPos))
 
@@ -111,14 +98,12 @@ class GA:
             del1 = (route1lastPos - route1startPos + 1)
             del2 = (route2lastPos - route2startPos + 1)
 
-            # add to new location by pushing
             route.route[index1][route1startPos:route1startPos] = swap2
             route.route[index2][route2startPos:route2startPos] = swap1
 
             route.routeLengths[index1] = len(route.route[index1])
             route.routeLengths[index2] = len(route.route[index2])
 
-    # Tournament Selection: choose a random set of chromosomes and find the fittest among them 
     @classmethod
     def tournamentSelection (cls, pop):
         tournament = Population(tournamentSize, False)
