@@ -61,23 +61,23 @@ A lényegi rész maga az A* algoritmus a következő.
 Létrehozunk két node-ot, a start node-ot és az end node-ot.
 
 \begin{python}
-    startNode = Node(None, start)
-    startNode.g = startNode.h = startNode.f = 0
-    endNode = Node(None, end)
-    endNode.g = endNode.h = endNode.f = 0
+startNode = Node(None, start)
+startNode.g = startNode.h = startNode.f = 0
+endNode = Node(None, end)
+endNode.g = endNode.h = endNode.f = 0
 \end{python}
 
 Ezt követően inicializálunk kettő listát melyek a már látogatott pontokban adnak majd nagy segítséget (nyitott és zárt lista).
 
 \begin{python}
-    openList = []
-    closedList = set()
+openList = []
+closedList = set()
 \end{python}
 
 Megadjuk a kezdő node-ot azáltal, hogy a nyitott listába rakjuk.
 
 \begin{python}
-    openList.append(startNode)
+openList.append(startNode)
 \end{python}
 
 Ezt kövezően ciklust indítunk, ami addig tart amíg el nem éri a végpontot.
