@@ -1,7 +1,3 @@
-'''
-Represents the chromosomes in GA's population.
-The object is collection of individual routes taken by trucks.
-'''
 from routemanager import *
 
 class Route:
