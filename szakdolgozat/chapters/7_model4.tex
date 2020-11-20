@@ -3,7 +3,7 @@
 \Section{A probléma megfoglmazása}
 
 Jelen eset reprezentálja az egy lerakatos több ügynökös utazó ügynök problémát. A feltételek meghatározásánál nélkülözhetetlen szempont, hogy határokat szabjunk az egyes futároknak, hogy ki milyen területre szállít ki. Ennek meghatározásánál fontos a kiszállítási címek közti táv figyelembe vétele. Ezek meghatározása után maga a probléma leegyszerűsíthető egy klasszikus utazó ügynök problémára.
-A probléma egy szemléltetését láthatjuk \aref{fig:model4}. ábrán.\cite{Diagrams.net}
+A probléma egy szemléltetését láthatjuk \aref{fig:model4}. ábrán \cite{Diagrams.net}.
 
 \begin{figure}[h!]
 \centering
@@ -16,7 +16,7 @@ A probléma egy szemléltetését láthatjuk \aref{fig:model4}. ábrán.\cite{Di
 
 A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva írható le.
 
-A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen $V$ a csúcsok halmaza, $x_{i,j}$ az, hogy megy-e az $i.$ pontból út a $j.$ pontba közvetlenül, $d_{i.j}$ az $i.$ és $j.$ pont távolsága. Legyen $m$ az ügynökök száma. Ezáltal a kapott célfüggvény: \cite{MTSP}
+A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen $V$ a csúcsok halmaza, $x_{i,j}$ az, hogy megy-e az $i.$ pontból út a $j.$ pontba közvetlenül, $d_{i.j}$ az $i.$ és $j.$ pont távolsága. Legyen $m$ az ügynökök száma. Ezáltal a kapott célfüggvény \cite{MTSP}: 
 \[
 \displaystyle
 \min \sum_{i=0}^n \sum_{j=0}^n d_{i,j} x_{i,j}.
@@ -52,7 +52,7 @@ továbbá
 \]
 ahol $S$ a pontok egy részhalmaza, $r(S)$ pedig az, hogy ezt a részhalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk $m$ darab út hagyja el és $m$ darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza.
 
-Magát a problémát genetikus algoritmussal oldottam meg. A következő szakaszban ennek részletezésére kerül sor.\cite{MTSP2}
+Magát a problémát genetikus algoritmussal oldottam meg. A következő szakaszban ennek részletezésére kerül sor \cite{MTSP2}.
 
 \Section{Megoldás genetikus algoritmus segítségével}
 
@@ -82,7 +82,7 @@ A következőkben ezek bemutatására kerül sor.
 
 \subsection{A \texttt{Dustbin} osztály}
 
-A \texttt{Dustbin} osztály reprezentálja a bejárható pontokat az útvonalban, annak $x$ és $y$ koordinátájával (\ref{fig:dustbin}. ábra).\cite{Python}
+A \texttt{Dustbin} osztály reprezentálja a bejárható pontokat az útvonalban, annak $x$ és $y$ koordinátájával (\ref{fig:dustbin}. ábra) \cite{Python}.
 
 \begin{figure}[!htb]
 \centering
@@ -95,7 +95,7 @@ Inicializáló metóduson kívűl található benne még olyan folyamat ami fele
 
 \subsection{A \texttt{galogical} modul}
 
-Az eljárás lényegi, logikai része a \texttt{GA} osztályban valósul meg (\ref{fig:galogical}. ábra).}
+Az eljárás lényegi, logikai része a \texttt{GA} osztályban valósul meg (\ref{fig:galogical}. ábra).
 
 \begin{figure}[!htb]
 \centering
