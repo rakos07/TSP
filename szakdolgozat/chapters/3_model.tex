@@ -1,57 +1,67 @@
 \Chapter{A kiszállítási problémák általános modelljei}
 
-\Section{Összes eset}
-
-Összes eset:
-
-étterem: egy - több
-futár: egy - több
-kiszállítás: egy - több
-
-(1, 1, 1)
-(1, 1, *)
-(1, *, *)
-(1, *, 1)
-(*, 1, *)
-(*, *, 1)
-(*, 1, 1)
-(*, *, *)
-
+A kiszállítási probléma vizsgálatához először annak általános modelljét kell megadni.
+A vizsgált absztrakciós szintén a modell három alapvető eleme az étterem, a futár és a rendelés/kiszállítás helye (\ref{fig:generalModel}. ábra).
 
 \begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/complexModel.png}
-\caption{Éttermi rendelés}
-\label{fig:generalModel}
+	\centering
+	\includegraphics[scale=0.5]{images/complexModel.png}
+	\caption{Éttermi rendelés modelljének három fő tényezője, úgy mint az étterem, a futár és a rendelés helye}
+	\label{fig:generalModel}
 \end{figure}
 
-\Section{Kizárt esetek}
+Az absztrak modellek nyilván nem írják le teljes részletességében a problémákat.
+Jelen esetben a következőket várjuk el a felírt modelltől.
+\begin{itemize}
+	\item Az éttermeket és a kiszállítások helyét pontszerűnek tekinti.
+	\item Szóhasználatot illetően azt feltételezzük, hogy a kiszállítás egyetlen városon belül történik. (Ez a matematikai modell szempontjából nem lényegi megkötés, de a problémák leírását egyszerűsíti.)
+	\item Nem feltételezi, hogy a futárnak lenne kapacitás, üzemanyag, vagy bármilyen hasonló jellegű limitációja.
+	\item A kiszállítások bejárási sorrendjére vonatkozóan azon túlmenően, hogy mindegyiket be kell járnia a futárnak, külön nincsen. Az optimalizálási probléma eredményeként várjuk, hogy mi az optimális sorrend.
+	\item A kiszállítás pontos idejére vonatkozóan nincs korlátozó tényező. A felvázolt modell az időt csak a megtett út függvényében képes tekinteni.
+	\item Nem tekintünk a modell részének semmilyen közbeiktatott változást (például a rendelés lemondását) vagy egyéb problémát (például a futár járművének meghibásodását, kiszállítással kapcsolatos problémát).
+\end{itemize}
+Ezen egyszerűsítések mellett is láthatjuk majd, hogy igen változatos esetekben, komoly optimalizálási problémák megoldására lesz szükség.
 
-\subsection{
-Egy étterem, több futár, egy kiszállítás
-}
+\Section{A probléma modelljének lehetséges esetei}
 
-Nem opcionális eset, mivel a futárok közül csak az egyik dolgozna, hiszen csak egy kiszállítási hely van. Addig a többi futár csak várna.
+A szóbajöhető lehetőségek egyszerűbb áttekinthetősége érdekében adjunk meg hármasokat, melyekben az elemek az éttermek, futárok és kiszállítások számosságára vonatkoznak.
+A számosság itt lehet jelenthet egyet vagy többet. Előbbit $1$-el, utóbbit pedig $*$-al fogjuk jelölni.
+Ezen jelölésrendszert használva összesen 8 lehetséges hármas adódna, úgy mint
+\[
+(1, 1, 1),
+(1, 1, *),
+(1, *, *),
+(1, *, 1),
+(*, 1, *),
+(*, *, 1),
+(*, 1, 1),
+(*, *, *).
+\]
+A következő szakaszban azt vizsgáljuk és indokoljuk meg, hogy melyek azok az esetek, amelyekkel ezek közül nem érdemes foglalkozni.
 
-\subsection{
-Több étterem, egy futár, egy kiszállítás
-}
+\Section{Figyelmen kívül hagyott és vizsgált esetek}
 
-Kizárt eset, hiszen több étterem megléte felesleges opcionalizálási célból, ha csak egy kiszállítási hely lett megadva.
+\begin{itemize}
+\item \textit{Egy étterem, több futár, egy kiszállítás}:
+Nincs értelme vizsgálni, mivel egyetlen kiszállításhoz elegendő csak egy futár.
+\item \textit{Több étterem, egy futár, egy kiszállítás}: Egy kiszállításnak szükségszerűen egy adott étteremből kell indulnia, tehát ez az eset nem értelmezhető.
+\item \textit{Több étterem, több futár, egy kiszállítás}: Hasonlóan az előző esethez, nem tudjuk értelmezni, mert egy kiszállításhoz egyértelműen tartozik egyetlen étterem és egyetlen futár.
+\end{itemize}
 
-\subsection{
-Több étterem, több futár, egy kiszállítás
-}
+Az említett eseteket kihagyva az optimalizálási problémákat a következőkre tudjuk megadni:
+\begin{itemize}
+\item egy étterem, egy futár, egy kiszállítás,
+\item egy étterem, egy futár, több kiszállítás,
+\item több étterem egy futár, több kiszállítás,
+\item egy étterem, több futár, több kiszállítás,
+\item több étterem, több futár, több kiszállítás.
+\end{itemize}
+Az így adódó optimalizálási problémákat és azok lehetséges megoldásait a dolgozat a további fejezetekben mutatja be.
 
-Az utóbbi két esetből mind a kettő olyan eset, ami nem életszerű. A jelenlegi eset szintén nem az, mivel a már említett esetek rossz tulajdonságait foglalja magába. \\ 
-Több futár - Egy kiszállítási hely: nem valós, hiszen a futárok közül akkor csak egy dolgozna. \\
-Több étterem - Egy kiszállítási hely: Felesleges több étterem egy kiszállítási helyhez.
+\Section{A város reprezentálása}
 
-\Section{Vizsgált esetek}
+Úgy tekintjük, hogy az éttermek és a kiszállítások helyei is egy városon belül vannak.
+A modell síkban gondolkozik, tehát egy étteremhez és egy kiszállítási helyhez is egy $(x, y) \in \mathbb{R}^2$ koordináta tartozik.
 
-Egy étterem, egy futár, egy kiszállítás\\
-Egy étterem, egy futár, több kiszállítás\\
-Több étterem egy futár, több kiszállítás\\
-Egy étterem, több futár, több kiszállítás\\
-Több étterem, több futár, több kiszállítás\\
-Ezen eseteket optimalizálási célból dolgozatomban a későbbiekben fejtem ki.
+A közlekedési hálózat modellje egy gráf, amely azt adja meg, hogy melyik pontból melyikbe lehet eljutni.
+Egy kiszállítás útvonala tehát ezen pontok közötti szakaszok sorozatának tekinthető, melyen az éttermek és a kiszállítási helyek is egy-egy pontot jelentenek.

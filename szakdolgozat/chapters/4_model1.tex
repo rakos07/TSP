@@ -3,7 +3,8 @@
 \Section{A probléma megfogalmazása}
 
 Ebben az esetben egy étterem található a városban, amelyből csak egy futár szállít ki mindig csak egy címre.
-Bonyolultságát tekintve a legrövidebb utat kell megtalálni két pont között feltételezve azt, hogy egy pontból a másikba nem lehet közvetlenül eljutni, hanem más pontokat érintve csak. Ezáltal egy gráf élein kell végigmenni és közben keresni a legrövidebb a legrövidebb távot. Az optimális út meghatározása után venni kell ezen út hosszúnak kétszeresét, mivel a futár a szállítást követően vissza kell, hogy térjen az étterembe. Két pont közötti hossz meghatározására kiválló példa az egyik leginkább ismert algoritmus az A* algoritmus.
+Bonyolultságát tekintve a legrövidebb utat kell megtalálni az úthálózat gráfjának két pontja között, feltételezve azt, hogy egy pontból a másikba nem feltétlenül lehet közvetlenül eljutni, csak más pontok érintésével. Ezáltal egy gráf élein kell végigmenni és közben keresni a legrövidebb hosszúságú utat. Az optimális út meghatározása után venni kell ezen út hosszúnak kétszeresét, mivel a futár a szállítást követően vissza kell, hogy térjen az étterembe.
+A probléma szemléltetését \aref{fig:model1}. ábrán láthatjuk.
 
 \begin{figure}[h!]
 \centering
@@ -12,28 +13,33 @@ Bonyolultságát tekintve a legrövidebb utat kell megtalálni két pont közöt
 \label{fig:model1}
 \end{figure}
 
+Két pont között a legrövidebb útvonal meghatározásához az $A^{*}$ algoritmus egy igen hatékony megoldást ad.
+A következő szakaszban ennek részletezése következik.
+
 \Section{A probléma megoldása}
 
-A* algoritmus
+Az $A^{*}$ algoritmusban a kiértékelő függvényünk egy heurisztikus függvény.
+Egy iteratív algoritmusról van szó.
+A fő ciklus minden iterációjánál az $A^{*}$-nak meg kell határoznia az általala kiterjesztendő utat.
+A szakasz költségét és a célhoz érésnek költségét veszi figyelembe, így az $A^{*}$ meghatározza az $f(n) = g(n) + h(n)$ függvényt minimalizáló utat. Itt $n$-nel jelöljük a következő úton található csúcsot, ezáltal $g(n)$ a kezdőpontból $n$-ig tartó út költsége. A heurisztikus függvény $h(n)$-nel azonosítható, ez pedig nem más mint az $n$-től a célig vezető legkisebb költségű út költségének becslése.
 
-Az eljárásban a kiértékelő függvényünk a heurisztikus fügvény. Maga a fő ciklus minden iterációjánál az A*-nak meg kell határoznia az általala kiterjesztendő utat. A szakasz költségét és a célhoz érésnek költségét veszi figyelembe. Így az A* meghatározza az f(n) = g(n) + h (n) függvényt minimalizáló utat. n-nel jelölik a következő úton található csúcsot, ezáltal g(n) a kezdőpontból n-ig tartó út költsége. A heurisztikus függvényt h(n)-nel azonosítható, ez pedig nem más mint az n-től a célig vezető legolcsóbb út költését becsüli.
-Az algoritmus legnagyobb hibája, hogy nem alkalmazható sok nagyméretű problémához nem praktikus, mivel a nagy memóriória igénye van, mert a meglátogatott csúcsokat eltárolja.
-
-f(n) = g(n) + h (n) \\
-g(n) - a kezdőpontból n-ig tartó út költsége \\
-h(n) - n-től a célig vezető legolcsóbb út költése 
+Az algoritmus a meglátogatott pontokat tárolja, így nagy méretű problémák esetében nagy lehet a memóriaigénye is.
+Az esetünkben vizsgált problémák esetében ebből szerencsére nem jelentett problémát. 
 
 \Section{A megoldás implementálása}
 
-Egy import-ot igényel ez pedig a cv2 ami a képek olvasására és manipulására szolgáló csomag.
+Érdemes az aktuálisan megoldandó feladat leírásához egy olyan formalizmust használni, amelyik egyszerűen adaptálható lehet a későbbiekben a valóságban is előforduló esetekhez.
+Abból indulhatunk ki, hogy a város úthálózatának megadását a térkép ismeretében néhány kézenfekvő átalakítási lépéssel jó lenne megoldani.
+Természetesen adódik, hogy így az úthálózat térképe egy kép legyen, amelyen be vannak jelölve azok az utak, amiken a futár haladhat.
+Mivel a kép lehet színes is, ezért egyúttal az éttermek és a kiszállítási helyek megkülönböztetésére is lehetőség adódik.
 
+A térkép betöltéséhez az OpenCV függvénykönyvtárat használhatjuk.
+Ehhez az alábbi kódsor szükséges.
 \begin{python}
 import cv2
-
 \end{python}
 
-Az osztály inicializálása a következőképpen történik. G-vel jelöljük a kezdőpontot. H-val a célt. F-el pedig a költséget.
-
+Definiáljunk egy \texttt{Node} nevű osztályt, amelynek inicializálása a következőképpen történik.
 \begin{python}
 def __init__(self, parent=None, position=None):
     self.parent = parent
@@ -42,71 +48,55 @@ def __init__(self, parent=None, position=None):
     self.g = 0
     self.h = 0
     self.f = 0
-
 \end{python}
+Ebben \texttt{g}-vel jelöljük a kezdőpontot, \texttt{h}-val a célt és \texttt{f}-el pedig a költséget.
 
 A következő definiciók nélkülözhetetlenek a pontok összehasonlítási folyamatában.
 
 \begin{python}
 def __eq__(self, other):
-        return self.position == other.position
+    return self.position == other.position
 
 def __hash__(self):
-        return hash(self.position)
-
+    return hash(self.position)
 \end{python}
 
-A lényegi rész maga az A* algoritmus a következő.
-
-Létrehozunk két node-ot, a start node-ot és az end node-ot.
-
+Az $A^{*}$ algoritmus ezek segítségével a következőképpen írható le.
+Létrehozunk két csomópontot, úgy mint a \texttt{startNode} kezdő- és \texttt{endNode} végpontot.
 \begin{python}
 startNode = Node(None, start)
 startNode.g = startNode.h = startNode.f = 0
 endNode = Node(None, end)
 endNode.g = endNode.h = endNode.f = 0
 \end{python}
-
-Ezt követően inicializálunk kettő listát melyek a már látogatott pontokban adnak majd nagy segítséget (nyitott és zárt lista).
-
+Ezt követően inicializálunk két listát, melyek a már látogatott pontokat tartják majd nyilván (nyitott és zárt lista).
 \begin{python}
 openList = []
 closedList = set()
 \end{python}
-
-Megadjuk a kezdő node-ot azáltal, hogy a nyitott listába rakjuk.
-
+Megadjuk a kezdő csomópontot azáltal, hogy a nyitott listába rakjuk.
 \begin{python}
 openList.append(startNode)
 \end{python}
-
-Ezt kövezően ciklust indítunk, ami addig tart amíg el nem éri a végpontot.
-
+Ezt kövezően ciklust indítunk, ami addig tart, amíg el nem éri a végpontot.
 \begin{python}
 while len(openList) > 0:
 \end{python}
-
-A cikluson belül a következőképpen határozható meg a jelenlegi node.
-
+A cikluson belül a következőképpen határozható meg a jelenlegi csomópont.
 \begin{python}
 currentNode = openList[0]
 currentIndex = 0
 for index, item in enumerate(openList):
-       if item.f < currentNode.f:
-          currentNode = item
-          currentIndex = index
-                
+   if item.f < currentNode.f:
+       currentNode = item
+       currentIndex = index
 \end{python}      
-
-A nyitott listából a zárt listába a következőképp rakjuk át az adott elemet
-          
+A nyitott listából a zárt listába a következőképp rakjuk át az adott elemet:
 \begin{python}
 openList.pop(currentIndex)
 closedList.add(currentNode)
 \end{python}
-
 A célhoz vezető út meghatározása a következőképpen zajlik.
-
 \begin{python}
 if currentNode == endNode:
     path = []
@@ -117,12 +107,12 @@ if currentNode == endNode:
     return path[::-1]
 \end{python}
 
-Az út meghatározásában nagy szerepet játszik a navigáció, észak, dél, kelet és nyugat irányban tudunk elindulni, köztes irányok nincsennek. Ezáltal ki van küszöbölve az a probléma, hogy ha a futár kereszteződéshez ér akkor egyből ráhajt az kívánt útra anélkül, hogy a kereszteződésbe belépne. Ehhez nekünk meg kell hatázozni a node pozicióját. Ezt kövezően egyértelművé kell hogy váljon, hogy közvetlenül el lehet-e érni. Le kell ellenőrizni, hogy az adott pont tényleg út-e. Mindezek után hozunk létre egy új node-ot amit aztán hozzáadunk az új lehetséges úthoz.
+Az út meghatározásában nagy szerepet játszik a navigáció; észak, dél, kelet és nyugat irányban tudunk elindulni, köztes irányok nincsennek. Meg kell hatázozni a csomópont pozicióját. Ezt követően egyértelművé kell hogy váljon, hogy közvetlenül el lehet-e érni azt. Le kell ellenőrizni, hogy az adott pont tényleg út-e. Mindezek után hozunk létre egy új csomópontot amit az után hozzáadunk az új lehetséges úthoz.
 
+Mivel a probléma nagyon hasonló egy labirintusban való útvonal kereséséhez, ezért a térképet az algoritmus szempontjából \texttt{maze} változóként kezeljük.
 \begin{python}
 newWay = []                
 for newPosition in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
-
     nodePosition = (currentNode.position[0] + newPosition[0], 
             		currentNode.position[1] + newPosition[1])
 
@@ -136,11 +126,11 @@ for newPosition in [(0, -1), (0, 1), (-1, 0), (1, 0)]:
         continue
 
     newNode = Node(currentNode, nodePosition)
-
+    
     newWay.append(newNode)
 \end{python}
 
-Az algoritmus utolsó lépéseként pedig megvizsgáljuk ezen lehetséges utakat, kiértékeljük a már fentebb említett f, g és h értékeket majd ezek által kiválasztjuk a legkedvezőbbet.
+Az algoritmus utolsó lépéseként megvizsgáljuk ezen lehetséges utakat, kiértékeljük a már fentebb említett \texttt{f}, \texttt{g} és \texttt{h} értékeket, majd ezek által kiválasztjuk a legkedvezőbbet.
 \begin{python}
 for way in newWay:
 
@@ -159,22 +149,23 @@ for way in newWay:
     openList.append(way)
 \end{python}
 
-Az implementációs rész elején említett cv2 csomag a következőkért szükséges. Adott egy kép, ami fekete(0, 0, 0), fehér(255, 255, 255), egy piros(0,0,255) és egy kék(255,0,0) színű pontokból tevődik össze. A fekete jelképezi a járhatatlan utat. Fehér színnel van jelölve a járható út. A piros szín mutatja meg a rendelési helyet, míg a kék az éttermet szimbolizálja. Ezen képfeldolgozáshoz a következők inicializálások szükségesek.
+Az implementációs rész elején említett \texttt{cv2} csomag a következők okok miatt szükséges.
+Adott egy kép, ami fekete $(0, 0, 0)$, fehér $(255, 255, 255)$, egy piros $(0 ,0, 255)$ és egy kék $(255,0,0)$ színű pontokból tevődik össze (ahol a hármasokban az értékek a kék, zöld és piros csatornák intenzitását jelentik $[0, 255]$ egészes intervallumon). A fekete jelképezi a járhatatlan utat. Fehér színnel van jelölve a járható út. A piros szín mutatja meg a rendelési helyet, míg a kék az éttermet szimbolizálja. Az ilyen formában rendelkezésre álló kép feldolgozáshoz a következők inicializálások szükségesek.
 
 \begin{python}
 img = cv2.imread("AStarProblem.bmp")
 height, width, channels = img.shape
 
-blue = "[255   0   0]"
-red = "[  0   0 255]"
-black = "[0 0 0]"
+blue =  "[255   0   0]"
+red =   "[  0   0 255]"
+black = "[  0   0   0]"
 white = "[255 255 255]"
-    
+
 mazeHelp = []
 maze = []
 \end{python}
 
-A kép minden pontján átmenve egy kettős ciklussal meghatározható a pixel pontos színe. Ebből egy tömböt kreálva elkészül az A* algoritmushoz felhasználható térkép. Futtatva az algoritmust az optimális utat kiszínezi sárga színnel az étterem és a kiszállítás helye között.
+A kép minden pontján áthaladva egy kettős ciklussal meghatározható a pixel pontos színe. Ebből egy tömböt kreálva elkészül az $A^{*}$ algoritmushoz felhasználható térkép. Futtatva az algoritmust az optimális utat kiszínezi sárga színnel az étterem és a kiszállítás helye között.
 
 \begin{python}
 for i in range(width):
@@ -200,25 +191,24 @@ cv2.imwrite('AStarResult.bmp', img)
 
 \Section{A megoldás tesztelése}
 
-A megoldás teszteléséhez nélkülözhetetlen egy bmp kép. A program megfelelő futásához elengedhetetlen, hogy a kép hosszúsága és szélessége megegyezzen. A fehér színnel kell kitelteni a járható utat, feketével a járhatatlant. Kék szín kell, hogy jelezze az éttermet, piros pedig a kiszállítási helyet. Amennyiben van lehetséges út az utóbbi két pont között, az alakalmazás megtalálja, valamint ha több út is tartozik hozzá, akkor a lehető legrövidebbet adja válaszul. Az eredmény egy képet generál, amin sárgával van feltüntetve az optimális út.
+A megoldás teszteléséhez nélkülözhetetlen egy BMP kép. A program megfelelő futásához azt feltételezzük, hogy a kép hosszúsága és szélessége megegyezik. A fehér színnel kell kitelteni a járható utat, feketével a járhatatlant. Kék szín kell, hogy jelezze az éttermet, piros pedig a kiszállítási helyet. Amennyiben van lehetséges út az utóbbi két pont között, az alakalmazás megtalálja, valamint ha több út is tartozik hozzá, akkor a lehető legrövidebbet adja válaszul. Az eredmény egy képet generál, amin sárgával van feltüntetve az optimális út.
 
-Egy kézzel rajzolt, várostérkép a következőképpen néz ki.
+Egy kézzel rajzolt, várostérkép \aref{fig:model1problem}. ábrán látható formában néz ki.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{images/AStarProblem.jpg}
-\caption{Teszt bemenet}
+\caption{A teszteléshez használt térkép}
 \label{fig:model1problem}
 \end{figure}
 
-A megoldást felhasználva a következő képet adja válaszul.
+A megoldást felhasználva \aref{fig:model1result}. ábrán látható képet kapjuk.
 
 \begin{figure}[h!]
 \centering
 \includegraphics[scale=0.6]{images/AStarResult.jpg}
-\caption{Teszt kimenet}
+\caption{Az eredményül kapott útvonal}
 \label{fig:model1result}
 \end{figure}
 
-A kép kíválóan szemlélteti, hogy a optimális utat adott eredményül, ezáltal az algoritmus felhasználható az adott feladathoz.
-
+A kép kíválóan szemlélteti, hogy optimális utat adott eredményül, ezáltal az algoritmus felhasználható az adott feladathoz.

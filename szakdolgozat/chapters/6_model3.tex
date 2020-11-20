@@ -2,7 +2,7 @@
 
 \Section{A probléma megfoglmazása}
 
-Több étterem esetén meg kell határozni néhány feltételt. Jelen helyzetben a futár elindul az egyik étteremből kiszállít mindent, majd egy másik étterembe érkezik ezt követően és annak a rendeléseit is kiszállítja. Időben is meg kell szabni néhány határt, miszerint az első étteremből való indulás pillanatáig beérkezett rendeléseket szállítja csak ki az összes étteremből. Miután sikeresen kivitte az összes rendelést visszatér a kezdő étterembe és kezdődik előlről a folyamat. Maga a folyamat egy onmagát ismételő klasszikus utazó ügynök probléma, annyi eltéréssel, hogy nem ugyan abba az étterembe kell érkeznie ahonnan indult, hanem a hozzá legközelebb esőbe emibe még nem járt az adott ciklusban.
+Több étterem esetén meg kell határozni néhány feltételt. Jelen helyzetben a futár elindul az egyik étteremből, kiszállít mindent, majd egy másik étterembe érkezik ezt követően, és annak a rendeléseit is kiszállítja. Időben is meg kell szabni néhány határt, miszerint az első étteremből való indulás pillanatáig beérkezett rendeléseket szállítja csak ki az összes étteremből. Miután sikeresen kivitte az összes rendelést visszatér a kezdő étterembe és kezdődik előlről a folyamat. Maga a folyamat egy önmagát ismételő klasszikus utazó ügynök probléma, annyi eltéréssel, hogy nem ugyan abba az étterembe kell érkeznie ahonnan indult, hanem a hozzá legközelebb esőbe amelyikbe még nem járt az adott ciklusban. A probléma szemléltetése \aref{fig:model3}. ábrán látható.
 
 \begin{figure}[h!]
 \centering
@@ -14,7 +14,7 @@ Több étterem esetén meg kell határozni néhány feltételt. Jelen helyzetben
 
 \Section{A probléma megoldása}
 
-Maga a probléma egy már megoldott helyzetre vezethető vissza. Az egy étterem, egy futár, több kiszállítás eseténél mindig ugyanabba az egy étterembe kellett visszatérnie. Az ott alkalmazott dolgok érvényesek erre az esetre is, annyi eltéréssel, hogy ha kiszállította egy étterem rendeléseit az utolsó megállóhelye a folyamatban a következő étterem (nem az amiből indult). A folyamat következő lépése pedig innen indul, a futár kiszállítja az összes rendelést és egy harmadik étterembe érkezik utolsóképp. Maga ez a folyamat mindaddig tart, amíg a futár meg nem látogatja az összes éttermet és vissza nem tér a kezdő, kiinduló étterembe. 
+Maga a probléma egy már megoldott helyzetre vezethető vissza. Az egy étterem, egy futár, több kiszállítás eseténél mindig ugyanabba az egy étterembe kellett visszatérnie a futárnak. Az ott alkalmazott módszerek érvényesek erre az esetre is, annyi eltéréssel, hogy ha kiszállította egy étterem rendeléseit az utolsó megállóhelye a folyamatban a következő étterem (nem az amiből indult). A folyamat következő lépése pedig innen indul, a futár kiszállítja az összes rendelést és egy harmadik étterembe érkezik utolsóképp. Ez mindaddig tart, amíg a futár meg nem látogatja az összes éttermet és vissza nem tér a kezdő, kiinduló étterembe. 
 
 \Section{A megoldás implementálása}
 
@@ -24,30 +24,24 @@ Be kellett vezetni egy összegzést ami az éttermek számát határozza meg.
 \begin{python}
 restaurantCount = 4
 \end{python}
-
-Ezt követően feltöltöttem egy listát random generált x és y koordinátákkal. Maga a lista hossza az előbb meghatározott restaurantCount -al egyenlő.
-
+Ezt követően feltöltöttem egy listát véletlenszerűen generált $x$ és $y$ koordinátákkal. Maga a lista hossza az előbb meghatározott \texttt{restaurantCount}-al egyenlő.
 \begin{python}
-restaurants = [random.sample(range(100),2) for x in range(restaurantCount)] 
+restaurants = [random.sample(range(100),2)
+               for x in range(restaurantCount)] 
 \end{python}
-
 Szükségszerű volt bevezetni egy külső ciklust, ami az éttermek számáig megy. Ezáltal nyerhetőek vissza az adott étterem koordinátái.
-
 \begin{python}
-for l in range(len(restaurants))
+for l in range(len(restaurants)):
 \end{python}
-
-A cikluson belül a pontok számát csökkentenünk kellett egyel, valamint az első helyre hozzáadni a restaurants adott l elemét. Ezáltal meg van oldava, hogy a ciklus mindig az éttermektől induljon.
+A cikluson belül a pontok számát csökkentenünk kellett egyel, valamint az első helyre hozzáadni a \texttt{restaurants} adott \texttt{l} elemét. Ezáltal meg van oldva, hogy a ciklus mindig az éttermektől induljon.
 
 \begin{python}
 travel = [random.sample(range(100), 2) for x in range(pointCount - 1)]
-
 travel.insert(0, restaurants[l])
 \end{python}
 
 Meg kell még oldani, hogy a ciklus utolsó eleme a következő étterem koordinátája legyen. Figyelembe kellett venni azt is, hogy az utolsó étterem utolsó pontja az első étterem koordinátáival kell, hogy megegyezzenek. Szükségessé vált a kör megszakítása is a gráfban. 
 Ezek a következőképpen néznek ki. 
-
 \begin{python}
 helperX = travel[i % pointCount]][0] for i in range(pointCount)
 helperY = travel[i % pointCount]][1] for i in range(pointCount)
@@ -60,12 +54,11 @@ else:
 	helperX.append(restaurants[0][1])
 \end{python}
 
-
 \Section{A megoldás tesztelése}
 
-Teszt eset: 4 étterem, 36 kiszállítási hely. \\\
-\\\
-Jól megfigyelhető, hogy az utolsó étterem utolsó pontja visszatér az első étterem koordinátáihoz(71, 42).
+A módszer vizsgálatához 4 éttermet és 36 kiszállítási helyet vettem számításba.
+Az elkészített program által visszaadott útvonalak \aref{fig:tspMR1}., \ref{fig:tspMR2}., \ref{fig:tspMR3}.  és \ref{fig:tspMR4}. ábrán láthatók.
+Jól megfigyelhető, hogy az utolsó étterem utolsó pontja visszatér az első étterem koordinátáihoz a (71, 42) pontba.
 
 \begin{figure}[h!]
 \centering

@@ -2,7 +2,8 @@
 
 \Section{A probléma megfoglmazása}
 
-Jelen eset reprezentálja az egy lerakatos több ügynökös utazó ügynök problémát. Feltételek meghatározásánál nélkülözhetetlen szempont, hogy határokat szabjunk az egyes futároknak, hogy ki milyen területre szállít ki. Ennek meghatározásánál fontos a kiszállítási címek közti táv figyelembe vétele. Ezek meghatározása után maga a probléma leegyszerűsíthető egy klasszikus utazó ügynök problémára.
+Jelen eset reprezentálja az egy lerakatos több ügynökös utazó ügynök problémát. A feltételek meghatározásánál nélkülözhetetlen szempont, hogy határokat szabjunk az egyes futároknak, hogy ki milyen területre szállít ki. Ennek meghatározásánál fontos a kiszállítási címek közti táv figyelembe vétele. Ezek meghatározása után maga a probléma leegyszerűsíthető egy klasszikus utazó ügynök problémára.
+A probléma egy szemléltetését láthatjuk \aref{fig:model4}. ábrán.
 
 \begin{figure}[h!]
 \centering
@@ -13,62 +14,61 @@ Jelen eset reprezentálja az egy lerakatos több ügynökös utazó ügynök pro
 
 \Section{A probléma megoldása}
 
-A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva\\
+A több ügynökös, egy lerakatos utazó ügynök probléma modellje kiszállítási helyzetekre szabva írható le.
 
-A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen $V$ a csúcsok halmaza, $x_{i,j}$ az, hogy megy-e az $i.$ pontból út a $j.$ pontba közvetlenül, $d_{i.j}$ az $i.$ és $j.$ pont távolsága. Legyen $m$ az ügynökök száma és ezáltal a kapott célfüggvény:
-
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/mtsp1.png}
-\end{figure}
-
+A több ügynökös, egy lerakatos utazó ügynök probléma esetén legyen $V$ a csúcsok halmaza, $x_{i,j}$ az, hogy megy-e az $i.$ pontból út a $j.$ pontba közvetlenül, $d_{i.j}$ az $i.$ és $j.$ pont távolsága. Legyen $m$ az ügynökök száma. Ezáltal a kapott célfüggvény:
+\[
+\displaystyle
+\min \sum_{i=0}^n \sum_{j=0}^n d_{i,j} x_{i,j}.
+\]
 Minden pontba csakis egy út indul, kivétel ez alól a 0. pont ami maga az étterem:
-
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/mtsp2.png}
-\end{figure}
+\[
+\displaystyle
+\sum_{i=1}^n x_{i,j} = 1, \quad j = 1, 2, \ldots, n, i \neq j.
+\]
 
 Minden pontból csak egy út érkezik, kivétel ez alól a 0. pont ami maga az étterem:
+\[
+\displaystyle
+\sum_{j=1}^n x_{i,j} = 1, \quad i = 1, 2, \ldots, n, i \neq j.
+\]
 
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/mtsp3.png}
-\end{figure}
+Az étteremre vonatkozó feltétel:
+\[
+\displaystyle
+\sum_{i=1}^n x_{i, 0} = m, \quad
+\sum_{j=1}^n x_{j, 0} = m.
+\]
 
-Az étteremre való feltétel:
+MTSP esetén a kövezkező megszorítások szükségesek:
+\[
+u_i - u_j + p x_{i,j} \leq p - 1, \quad i, j = 1, 2, \ldots, n, i \neq j,
+\]
+továbbá
+\[
+\displaystyle
+\sum_{i \notin S} \sum_{j \notin S} x_{i,j} \geq r(S), \quad
+\forall S \subseteq V \setminus \{0\}, S \neq \emptyset,
+\]
+ahol $S$ a pontok egy részhalmaza, $r(S)$ pedig az, hogy ezt a részhalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk $m$ darab út hagyja el és $m$ darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza.
 
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/mtsp4.png}
-\end{figure}
+Magát a problémát genetikus algoritmussal oldottam meg. A következő szakaszban ennek részletezésére kerül sor.
 
-MTSP esetén a kövezkező megszorítások szükségessége elengedhetetlen a helyes sorrendmátrix beteljesüléséhez:
+\Section{Megoldás genetikus algoritmus segítségével}
 
-\begin{figure}[h!]
-\centering
-\includegraphics[scale=0.5]{images/mtsp5.png}
-\end{figure}
+A genetikus algoritmust számítógépes szimulációkkal reprezentálják. A keresési teret egyedek populációi alkotják. Ezen egyedeket lehet keresztezni (más szóval rekombinálni) és mutálni is, ezáltal új egyedek kreálhatóak. Fitnesz függvénynek nevezzük a keresési téren értelmezett célfüggvényt. Az algoritmus működése során új egyedeket képes létrehozni a rekombinációs és mutációs operátorokkal, valamint kiszűri a rosszabb fitnesz függvény értékkel rendelkező egyedeket, majd ezt követően kiszedi azokat a populációból.
 
-A definícióban $S$ a pontok egy részhalmaza, $r(S)$ pedig az, hogy ezt a részthalmazt minimum hány futárnak kell látogatnia. A definíció szumma része megmutatja, hogy minimum hány út megy be a vizsgált pontba. Az éttermet figyelmen kívűl hagyjuk m darab út hagyja el és m darab út megy ki belőle. Ezáltal a fenti egyenlőtlenség nem a futárok tényleges számát adná vissza. 
+Az algoritmus működésének a folyamata a következő lépésekben foglalható össze.
 
-Magát a problémát genetikus algoritmussal oldottam meg.\\
+1. \textit{Inicializáció}:  Az induló populációt legkönnyebben véletlenszerű számokkal tudjuk létrehozni. Maga a populáció mérete erősen függ a problémától. A keresési térben az egyedek általában egyenletesen oszlanak el, viszont számos esetben több egyedet generál a feltételezhető optimum közelében. \\
 
-Genetikus algoritmus \\
+2. \textit{Kiválasztás}: Az összes eredményes generációban szelekcióra kerül az aktuális populáció egy része szaporodásra. A kiválasztás rendszerint fitnesz alapján történik, ahol a fitnesz függvény szerinti legfitebb egyedek valószínűbben kerülnek szelekcióra. Számos metódus az összes egyed fitneszét figyelembe veszi és ezek alapján keresi a legjobbat. Akadnak olyan metódusok is amik csak néhány véletlenszerűen kiválasztott példányt vizsgálnak. A példány minőségének mérésére használják a fitnesz függvényt. Ezen függvény bonyolultsága minden esetben a problémától függ. \\
 
-A genetikus algoritmust számítógépes szimulációkkal reprezentálják. A keresési teret populációs egyedek alkotják. Ezen egyedeket lehet keresztezni (más szóval rekombinálni) és mutálni is, ezáltal új egyedek kreálhatóak. Fitnesz függvénynek nevezzük a keresési téren értelmezett célfüggvényt. Az alfgoritmus működése során új egyedeket képes létrehozni a rekombinációs és mutációs operátorokkal, valamint kiszűri a rosszabb fitnesz függvény értékkel rendelkező egyedeket, majd ezt követően kiszedi azokat a populációból.
+3. \textit{Szaporítás}: Egyoperandusú mutációval valamint kétoperandusú keresztezési műveletek által lehetséges a példányokból újabb példányokat kreálni. Ezen operátorokat véletlenszerűen használják. \\
 
-Folyamata: \\
+4. \textit{Leállás}: A genetikus algoritmus addig fut amíg be nem teljesül a leállási feltétel.\\
 
-1. Inicializáció:  Az induló populációt legkönnyebben véletlenszerű számokkal tudjuk létrehozni. Maga a populáció mérete erősen függ a problémától. A keresési téren az egyedek általában egyenletesen oszlanak el, viszont számos esetben több egyedet generál a feltételezhető optimum közelében. \\
-
-2. Kiválasztás: Az összes eredményes generációban szelekcióra kerül az aktuális populáció egy része szaporodásra. A kiválasztás rendszerint fitnesz alapján történik, ahol a fitnesz függvény szerinti legfitebb egyedek valószínűbben kerülnek szelekcióra. Számos metódus az összes egyed fitneszét figyelembe veszi és ezek alapján keresi a legjobbat. Akadnak olyan metódusok is amik csak néhány véletlenszerűen kiválasztott példányt vizsgálnak. A példány minőségének mérésére használják a fitnesz függvényt. Ezen függvény bonyolultsága minden esetben a problémától függ. \\
-
-3. Szaporítás: Egyoperandusú mutációval valamint kétoperandusú keresztezési műveletek által lehetséges a példányokból újabb példányokat kreálni. Ezen operátorokat véletlenszerűen használják. \\
-
-4. Leállás: A genetikus algoritmus addig fut amíg be nem teljesül a leállási feltétel.\\
-
-Előnye: Kedvező eredménnyel használható majdnem minden problémára. Folytonos, illetve diszkrét problémáknál úgyszintén alkalmazható. A folyamatok könnyen páhuzamosíthatóak általa.
+A módszer előnye: Kedvező eredménnyel használható majdnem minden problémára. Folytonos, illetve diszkrét problémáknál úgyszintén alkalmazható. A folyamatok könnyen páhuzamosíthatóak általa.
 
 Hátránya: A megfelelő operátor kiválasztása nehéz. Paraméterezése és a leállási feltétel meghatározása sok időt igényel, valamint nem garantált a globális optimum elérése.
 
@@ -76,33 +76,35 @@ Elitizmus: Ebben az esetben a jelenlegi populáció legjobb egyedét mindig, mó
 
 \Section{A megoldás implementálása}
 
-\subsection{
-Dustbin
-}
+A genetikus algoritmus megvalósítása a \texttt{dustbin} modul \texttt{Dustbin} nevű osztálya, és a \texttt{galogic} modul \texttt{GA} nevű osztálya segítségével történt.
+Ezekhez hozzá tartoznak még a \texttt{main}, \texttt{globals}, \texttt{population}, \texttt{route} és a \texttt{routeManager} nevű modulok.
+A következőkben ezek bemutatására kerül sor.
+
+\subsection{A \texttt{Dustbin} osztály}
+
+A \texttt{Dustbin} osztály reprezentálja a bejárható pontokat az útvonalban, annak $x$ és $y$ koordinátájával (\ref{fig:dustbin}. ábra).
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.7]{images/dustbin.png}
-\caption{Dustbin osztálydiagram}
+\caption{Dustbin osztály metódusai és adattagjai}
 \label{fig:dustbin}
 \end{figure}
 
-Inicializáló metóduson kívűl található benne még olyan folyamat ami felel, az x és y értékek feldolgozásával. Ezen felül az euklidészi távolság számítás is itt foglal helyet. Utolsó sorban pedig egy formázó metódus ami a szöveget helyesen formázottan adja vissza.
+Inicializáló metóduson kívűl található benne még olyan folyamat ami felel, az $x$ és $y$ értékek feldolgozásával. Ezen felül az euklidészi távolság számítás is itt foglal helyet. Továbbá található még benne egy formázó metódus, ami a szöveget helyesen formázottan adja vissza.
 
-\subsection{
-Galogical
-}
+\subsection{A \texttt{galogical} modul}
 
-Az eljárás lényegi, logikai része itt valósul meg.
+Az eljárás lényegi, logikai része a \texttt{GA} osztályban valósul meg (\ref{fig:galogical}. ábra).
 
 \begin{figure}[!htb]
 \centering
 \includegraphics[scale=0.8]{images/galogic.png}
-\caption{Galogical osztálydiagram}
+\caption{Galogical osztály metódusai}
 \label{fig:galogical}
 \end{figure}
 
-A populáció fejlesztésére használt metódus. Tartalmaz egy ellenőrzést, hogy kívánunk-e elitizmussal élni a futás alatt vagy sem. Ezenfelül a keresztezés és mutáció operátorokat meghívó programkódok is itt foglalnak helyet.
+Az \texttt{evolvePopulation} a populáció fejlesztésére használt metódus. Tartalmaz egy ellenőrzést, hogy kívánunk-e elitizmussal élni a futás alatt vagy sem. Ezenfelül a keresztezés és mutáció operátorokat meghívó programkódok is itt foglalnak helyet.
 
 \begin{python}
 @classmethod
@@ -126,18 +128,18 @@ def evolvePopulation(cls, pop):
 
     return newPopulation
 \end{python}
-A keresztezési operátor implementációját a következőképpen kódoltam.
 
+A keresztezési operátor implementációját a következő metódussal oldottam meg.
 \begin{python}
 @classmethod
-def crossover (cls, parent1, parent2):
+def crossover(cls, parent1, parent2):
     child = Route()
     child.base.append(Dustbin(-1, -1))
     startPos = 0
     endPos = 0
-    while (startPos >= endPos):
-        startPos = random.randint(1, numNodes-1)
-        endPos = random.randint(1, numNodes-1)
+    while startPos >= endPos:
+        startPos = random.randint(1, numNodes - 1)
+        endPos = random.randint(1, numNodes - 1)
 
     parent1.base = [parent1.route[0][0]]
     parent2.base = [parent2.route[0][0]]
@@ -161,17 +163,17 @@ def crossover (cls, parent1, parent2):
                     child.base[i1] =  parent2.base[i]
                     break
 
-    k=0
+    k = 0
     child.base.pop(0)
     for i in range(numDeliverer):
         child.route[i].append(RouteManager.getDustbin(0))
         for j in range(child.routeLengths[i]-1):
             child.route[i].append(child.base[k])
-            k+=1
+            k += 1
     return child
 \end{python}
-A mutáció operátor kódja az alábbi.
 
+A mutáció operátor kódja az alábbi.
 \begin{python}
 @classmethod
 def mutate (cls, route):
@@ -184,13 +186,16 @@ def mutate (cls, route):
     route1startPos = 0
     route1lastPos = 0
     while route1startPos >= route1lastPos or route1startPos == 1:
-        route1startPos = random.randint(1, route.routeLengths[index1] - 1)
-        route1lastPos = random.randint(1, route.routeLengths[index1] - 1)
+        route1startPos =
+          random.randint(1, route.routeLengths[index1] - 1)
+        route1lastPos =
+          random.randint(1, route.routeLengths[index1] - 1)
 
     route2startPos = 0
     route2lastPos = 0
     while route2startPos >= route2lastPos or route2startPos == 1:
-        route2startPos = random.randint(1, route.routeLengths[index2] - 1)
+        route2startPos =
+          random.randint(1, route.routeLengths[index2] - 1)
         route2lastPos= random.randint(1, route.routeLengths[index2] - 1)
 
     swap1 = []
@@ -213,7 +218,7 @@ def mutate (cls, route):
         route.routeLengths[index2] = len(route.route[index2])
 \end{python}
 
-A tournamentSelection metódus kiválasztja a legfitebb kromószómahalmazt.
+A \texttt{tournamentSelection} metódus kiválasztja a legfitebb kromószómahalmazt.
 
 \begin{python}
 @classmethod
@@ -228,13 +233,10 @@ def tournamentSelection (cls, pop):
     return fittest
 \end{python}
 
-\subsection{
-Globals
-}
+\subsection{Az algoritmus globális változói}
 
-Az inicializáló adatokat foglalja magában, ezen kívűl még két metódust is tartalmaz.
-
-Az inicializáló adatokat három részre lehet osztani.
+Az algoritmushoz tartozó globális változók egy \texttt{globals} nevű modulba kerültek.
+Az inicializáló adatokat foglalja magába, ezen kívűl még két függvényt is tartalmaz. Az inicializáló adatokat három részre lehet osztani.
 
 1. A koordináták tartományát lehet vele manipulálni.
 
@@ -261,75 +263,64 @@ elitism = True
 numDeliverer = 2
 \end{python}
 
-A két metódus pedig random adatok generálására szolgál.
+A \texttt{random\_range} és a \texttt{route\_length} függvények véletlenszerű adatok generálására szolgálnak.
 
-\subsection{
-Main
-}
+\subsection{A \texttt{main} modul}
 
-Maga a futtatható metódus. Ebben értékelődik ki az optimális útvonal valamint egy diagram ami y tengelyén látható a fittnesz függvény érték (távolság), x tengelyén pedig a generációk száma.
+Maga a futtatható metódus. Ebben értékelődik ki az optimális útvonal valamint egy diagram ami $y$ tengelyén látható a fittnesz függvény érték (távolság), $x$ tengelyén pedig a generációk száma.
 
-\subsection{
-Population
-}
+\subsection{A \texttt{population} modul}
+
+Az egyedeken végzett műveletekhez szükséges oszály (\ref{fig:population}. ábra).
 
 \begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.8]{images/population.png}
-\caption{Population osztálydiagram}
-\label{fig:population}
+	\centering
+	\includegraphics[scale=0.8]{images/population.png}
+	\caption{Population osztály elemei}
+	\label{fig:population}
 \end{figure}
 
-Az egyedeken végzett műveletekhez szükséges oszály. Tartalmaz egy inicializáló metódust, ezen felül itt kapott helyet az út mentése, kiolvasása is. A legfitebb érték meghatározásán kívűl a populációk összehasonlításával is foglalkozik az oszály. 
+Tartalmaz egy inicializáló metódust, ezen felül itt kapott helyet az út mentése, kiolvasása is. A legfitebb érték meghatározásán kívűl a populációk összehasonlításával is foglalkozik az oszály. 
 
-\subsection{
-Route
-}
+\subsection{A \texttt{Route} osztály}
+
+Az optimális út kiszámításához használt osztály (\ref{fig:route}. ábra). Az alapvető inicializáláson kívűl jelen vannak még a helyes út kiszámításához használatos metódosok. Végezetül egy szövegformázó metódus is itt kapott helyet.
 
 \begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.8]{images/route.png}
-\caption{Route osztálydiagram}
-\label{fig:route}
+	\centering
+	\includegraphics[scale=0.8]{images/route.png}
+	\caption{A \texttt{Route} osztály elemei}
+	\label{fig:route}
 \end{figure}
 
-Az optimális út kiszámításához használt osztály. Az alap inicializáláson kívűl jelen vannak még a helyes út kiszámításához használatos metódosok. Végezetül egy szövegformázó metódus is itt kapott helyet.
-\\\
-\\\
-\\\
-\\\
+\subsection{A \texttt{Routemanager} osztály}
 
-\subsection{
-Routemanager
-}
+Az oszály egyedeket kezel, három osztálymetódusból áll amik az optimális út eléréséhez nélkülözhetetlenek (\ref{fig:routeManager}. ábra).
 
 \begin{figure}[!htb]
-\centering
-\includegraphics[scale=0.8]{images/routemanager.png}
-\caption{Routemanager osztálydiagram}
-\label{fig:routeManager}
+	\centering
+	\includegraphics[scale=0.8]{images/routemanager.png}
+	\caption{A \texttt{Routemanager} osztály elemei}
+	\label{fig:routeManager}
 \end{figure}
-
-Az oszály egyedeket kezel, három osztálymetódusból áll amik az optimális út eléréséhez nélkülözhetetlenek.
-
-\\\
-\\\
-\\\
-\\\
-\\\
-\\\
 
 \Section{A megoldás tesztelése}
 
-\subsection{
-Elitizmus nélkül
-}
+A genetikus algoritmus működését megvizsgáltam elitizmus használatával és a nélkül.
+Ezek eredményeit a következő szakaszok foglalják össze.
 
-A kiszállítási helyek száma: 40\\
-Generációk száma: 40\\
-Populáció nagysága: 20\\
-Elitizmus: Hamis\\
-Futárok száma: 3\\
+\subsection{Elitizmus nélkül}
+
+Az algoritmus paraméterei a következők voltak:
+\begin{itemize}
+\item A kiszállítási helyek száma: 40
+\item Generációk száma: 40
+\item Populáció nagysága: 20
+\item Elitizmus: Hamis
+\item  Futárok száma: 3
+\end{itemize}
+
+A futtatás eredményei \aref{fig:MTSPMultiDepo1}. és \ref{fig:MTSPMultiDepo1Route}. ábrán láthatók.
 
 \begin{figure}[!htb]
 \centering
@@ -345,15 +336,9 @@ Futárok száma: 3\\
 \label{fig:MTSPMultiDepo1Route}
 \end{figure}
 
-\subsection{
-Elitizmussal
-}
+\subsection{Elitizmussal}
 
-A kiszállítási helyek száma: 40\\
-Generációk száma: 40\\
-Populáció nagysága: 20\\
-Elitizmus: Igaz\\
-Futárok száma: 3\\
+Az előző paraméterezéssel, viszont elitizmus alkalmazásával \aref{fig:MTSPMultiDepo2}. és \ref{fig:MTSPMultiDepo2Route}. ábrákon látható eredményeket adta az algoritmus.
 
 \begin{figure}[!htb]
 \centering
