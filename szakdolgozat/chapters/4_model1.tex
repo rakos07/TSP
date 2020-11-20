@@ -4,7 +4,7 @@
 
 Ebben az esetben egy étterem található a városban, amelyből csak egy futár szállít ki mindig csak egy címre.
 Bonyolultságát tekintve a legrövidebb utat kell megtalálni az úthálózat gráfjának két pontja között, feltételezve azt, hogy egy pontból a másikba nem feltétlenül lehet közvetlenül eljutni, csak más pontok érintésével. Ezáltal egy gráf élein kell végigmenni és közben keresni a legrövidebb hosszúságú utat. Az optimális út meghatározása után venni kell ezen út hosszúnak kétszeresét, mivel a futár a szállítást követően vissza kell, hogy térjen az étterembe.
-A probléma szemléltetését \aref{fig:model1}. ábrán láthatjuk.
+A probléma szemléltetését \aref{fig:model1}. ábrán láthatjuk.\cite{Diagrams.net}
 
 \begin{figure}[h!]
 \centering
@@ -13,7 +13,7 @@ A probléma szemléltetését \aref{fig:model1}. ábrán láthatjuk.
 \label{fig:model1}
 \end{figure}
 
-Két pont között a legrövidebb útvonal meghatározásához az $A^{*}$ algoritmus egy igen hatékony megoldást ad.
+Két pont között a legrövidebb útvonal meghatározásához az $A^{*}$ algoritmus egy igen hatékony megoldást ad.\cite{Astar}
 A következő szakaszban ennek részletezése következik.
 
 \Section{A probléma megoldása}
@@ -33,13 +33,13 @@ Abból indulhatunk ki, hogy a város úthálózatának megadását a térkép is
 Természetesen adódik, hogy így az úthálózat térképe egy kép legyen, amelyen be vannak jelölve azok az utak, amiken a futár haladhat.
 Mivel a kép lehet színes is, ezért egyúttal az éttermek és a kiszállítási helyek megkülönböztetésére is lehetőség adódik.
 
-A térkép betöltéséhez az OpenCV függvénykönyvtárat használhatjuk.
+A térkép betöltéséhez az OpenCV függvénykönyvtárat használhatjuk.\cite{PythonOpenCV}
 Ehhez az alábbi kódsor szükséges.
 \begin{python}
 import cv2
 \end{python}
 
-Definiáljunk egy \texttt{Node} nevű osztályt, amelynek inicializálása a következőképpen történik.
+Definiáljunk egy \texttt{Node} nevű osztályt, amelynek inicializálása a következőképpen történik.\cite{Python}
 \begin{python}
 def __init__(self, parent=None, position=None):
     self.parent = parent
@@ -191,7 +191,7 @@ cv2.imwrite('AStarResult.bmp', img)
 
 \Section{A megoldás tesztelése}
 
-A megoldás teszteléséhez nélkülözhetetlen egy BMP kép. A program megfelelő futásához azt feltételezzük, hogy a kép hosszúsága és szélessége megegyezik. A fehér színnel kell kitelteni a járható utat, feketével a járhatatlant. Kék szín kell, hogy jelezze az éttermet, piros pedig a kiszállítási helyet. Amennyiben van lehetséges út az utóbbi két pont között, az alakalmazás megtalálja, valamint ha több út is tartozik hozzá, akkor a lehető legrövidebbet adja válaszul. Az eredmény egy képet generál, amin sárgával van feltüntetve az optimális út.
+A megoldás teszteléséhez nélkülözhetetlen egy BMP kép. A program megfelelő futásá\-hoz azt feltételezzük, hogy a kép hosszúsága és szélessége megegyezik. A fehér színnel kell kitelteni a járható utat, feketével a járhatatlant. Kék szín kell, hogy jelezze az éttermet, piros pedig a kiszállítási helyet. Amennyiben van lehetséges út az utóbbi két pont között, az alakalmazás megtalálja, valamint ha több út is tartozik hozzá, akkor a lehető legrövidebbet adja válaszul. Az eredmény egy képet generál, amin sárgával van feltüntetve az optimális út.
 
 Egy kézzel rajzolt, várostérkép \aref{fig:model1problem}. ábrán látható formában néz ki.
 

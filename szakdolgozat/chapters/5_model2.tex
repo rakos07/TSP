@@ -4,7 +4,7 @@
 
 Egy étterem, egy futár és több kiszállításnál az adott helyzet egészen visszavezethető a klasszikus utazó ügynök problémához.
 A futár elindul az étteremből, érinteni kell az összes kiszállítási pontot, valamint vissza kell érkeznie az étterembe, mindezt úgy, hogy a lehető legkisebb utat tegye meg.
-A probléma szemléltetése \aref{fig:model2}. ábrán látható.
+A probléma szemléltetése \aref{fig:model2}. ábrán látható.\cite{Diagrams.net}
 
 \begin{figure}[h!]
 \centering
@@ -16,10 +16,10 @@ A probléma szemléltetése \aref{fig:model2}. ábrán látható.
 \Section{A probléma megoldása}
 
 A probléma megoldásához egy nem determinisztikus módszer került implementálásra.
-Ebben egy úgynevezett \textit{Gibbs-faktor} reprezentálja az új állapotba való áttérés valószínűségét.
+Ebben egy úgynevezett \textit{Gibbs-faktor} reprezentálja az új állapotba való áttérés valószí\-nű\-ségét.\cite{GibbsFactor}
 
-A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási kritériumokra levetítve a következő.
-Az egy ügynökös utazó ügynök probléma esetén jelölje $V$ a csúcsok (pontok) halmazát, $x_{i,j}$ azt, hogy az $i.$ pontból megy-e közvetlenül út a $j.$ pontba. Az $x_{i,j}$ értéke 1, ha útvonal köti össze a két pontot, különben 0:
+A klasszikus utazó ügynök probléma matematikai megfogalmazása kiszállítási krité\-riumokra levetítve a következő.
+Az egy ügynökös utazó ügynök probléma esetén jelölje $V$ a csúcsok (pontok) halmazát, $x_{i,j}$ azt, hogy az $i.$ pontból megy-e közvetlenül út a $j.$ pontba. Az $x_{i,j}$ értéke 1, ha útvonal köti össze a két pontot, különben 0: \cite{TSP}
 \[
 x_{i, j} \in \{0, 1\}, \quad i, j = 1, 2, \ldots, n, i \neq j.
 \]
@@ -57,7 +57,7 @@ Itt $u_{i}$ az $i.$ pont, $u_{j}$ a $j.$ pont látogatási indexe, ahol az $i.$ 
 \)
 Ezek közül kell választanunk, ez ugyanis a Ha\-mil\-ton-körök száma az $n$ pontból álló teljes gráfban ($n > 2$ esetén).
 
-A Python implementációhoz az alábbi import szükséges:
+A Python implementációhoz az alábbi import szükséges:\cite{Python} \cite{Spatial}
 \begin{python}
 from scipy.spatial import distance_matrix
 \end{python}
